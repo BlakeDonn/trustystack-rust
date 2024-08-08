@@ -1,6 +1,6 @@
 use actix_web::{guard, web, App, HttpServer};
-use std::sync::Arc;
 use rust_backend::{graphql_handler, schema};
+use std::sync::Arc;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -9,16 +9,13 @@ async fn main() -> std::io::Result<()> {
     let schema = Arc::new(schema::create_schema());
 
     HttpServer::new(move || {
-        App::new()
-            .app_data(web::Data::new(schema.clone()))
-            .service(
-                web::resource("/graphql")
-                    .guard(guard::Post())
-                    .to(graphql_handler),
-            )
+        App::new().app_data(web::Data::new(schema.clone())).service(
+            web::resource("/graphql")
+                .guard(guard::Post())
+                .to(graphql_handler),
+        )
     })
     .bind("127.0.0.1:8080")?
     .run()
     .await
 }
-
