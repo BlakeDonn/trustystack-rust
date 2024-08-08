@@ -17,7 +17,7 @@ pub fn get_prebuilts() -> Vec<Prebuilt> {
         Prebuilt {
             name: "Stealth".to_string(),
             description: "Intel Core i3".to_string(),
-            image_url: "stealth.jpg".to_string(),
+            image_url: "prebuilts/stealth.png".to_string(),
             specifications: vec![
                 Spec {
                     key: "CPU".to_string(),
@@ -48,7 +48,7 @@ pub fn get_prebuilts() -> Vec<Prebuilt> {
         Prebuilt {
             name: "Darkwake".to_string(),
             description: "Intel Core i5".to_string(),
-            image_url: "darkwake.jpg".to_string(),
+            image_url: "prebuilts/darkwake.png".to_string(),
             specifications: vec![
                 Spec {
                     key: "CPU".to_string(),
@@ -79,7 +79,7 @@ pub fn get_prebuilts() -> Vec<Prebuilt> {
         Prebuilt {
             name: "Shadowblade".to_string(),
             description: "Intel Core i7".to_string(),
-            image_url: "shadowblade.jpg".to_string(),
+            image_url: "prebuilts/shadowblade.png".to_string(),
             specifications: vec![
                 Spec {
                     key: "CPU".to_string(),

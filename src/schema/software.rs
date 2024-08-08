@@ -24,22 +24,22 @@ pub fn get_softwares() -> Vec<Software> {
         Software {
             name: "PIX4D".to_string(),
             description: "Description for PIX4D".to_string(),
-            image_url: "/assets/images/home/pix4d.jpg".to_string(),
+            image_url: "software/pix4d.png".to_string(),
         },
         Software {
             name: "Autodesk".to_string(),
             description: "Description for Autodesk".to_string(),
-            image_url: "/assets/images/home/autodesk.jpg".to_string(),
+            image_url: "software/autodesk.png".to_string(),
         },
         Software {
             name: "RenderMan".to_string(),
             description: "Description for RenderMan".to_string(),
-            image_url: "/assets/images/home/renderman.jpg".to_string(),
+            image_url: "software/renderman.png".to_string(),
         },
         Software {
             name: "Blender".to_string(),
             description: "Description for Blender".to_string(),
-            image_url: "/assets/images/home/blender.jpg".to_string(),
+            image_url: "software/blender.png".to_string(),
         },
     ]
 }
