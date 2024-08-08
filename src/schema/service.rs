@@ -34,12 +34,12 @@ pub fn get_services() -> Vec<Service> {
         Service {
             name: "Commercial Computing Solutions".to_string(),
             description: "No matter your the size of your project, type of hardware, or computing power needed, Coastal has got you covered when it comes to your commercial productivity needs. Sourcing the most up to date systems, peripherals, audio video, and collaboration technologies, there is not a solution we cannot solve for. Learn how you can enhance your workplace productivity with business solutions from Coastal Configurations.".to_string(),
-            image_url: "servicese/commercial.jpg".to_string(),
+            image_url: "services/commercial.jpg".to_string(),
         },
         Service {
             name: "Gaming Systems".to_string(),
             description: "Coastal Configurations Gaming PCs are engineered to deliver unparalleled performance for all your favorite titles. Whether you're battling in the latest AAA games, exploring vast open worlds, or competing in high-stakes eSports, our gaming PCs are built to exceed expectations. Combining cutting-edge design with silent, reliable, and powerful components, each system is carefully assembled by our expert technicians in the USA, tailored to ensure you stay ahead of the game with smooth, lag-free gameplay and breathtaking visuals.".to_string(),
-            image_url: "services/home/gaming.jpg".to_string(),
+            image_url: "services/gaming.jpg".to_string(),
         },
     ]
 }
