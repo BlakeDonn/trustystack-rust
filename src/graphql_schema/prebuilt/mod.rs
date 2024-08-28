@@ -1,3 +1,4 @@
+//prebuilt/mod.rs
 use juniper::GraphQLObject;
 
 pub mod spec;

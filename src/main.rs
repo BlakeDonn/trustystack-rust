@@ -1,12 +1,12 @@
 use actix_web::{guard, web, App, HttpServer};
-use rust_backend::{graphql_handler, schema};
+use rust_backend::{graphql_handler, graphql_schema};
 use std::sync::Arc;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     rust_backend::greet();
 
-    let schema = Arc::new(schema::create_schema());
+    let schema = Arc::new(graphql_schema::create_schema());
 
     HttpServer::new(move || {
         App::new().app_data(web::Data::new(schema.clone())).service(

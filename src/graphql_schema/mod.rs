@@ -1,4 +1,3 @@
-// src/schema/mod.rs
 pub mod prebuilt;
 pub mod service;
 pub mod software;
