@@ -3,36 +3,37 @@
 This project is organized into several key modules that manage backend logic, database interactions, and the GraphQL API. Below is a detailed overview of the most critical components and their functions.
 
 ## Project Structure
+```plaintext
 .
 ├── Cargo.toml
-├── README.md
 ├── diesel.toml
 ├── migrations
-│   ├── 00000000000000_diesel_initial_setup
-│   │   ├── down.sql
-│   │   └── up.sql
-│   └── 2024-08-28-014654_create_cpu_table
-│       ├── down.sql
-│       └── up.sql
+│   ├── 00000000000000_diesel_initial_setup
+│   │   ├── down.sql
+│   │   └── up.sql
+│   └── 2024-08-28-014654_create_cpu_table
+│       ├── down.sql
+│       └── up.sql
 ├── src
-│   ├── diesel_schema
-│   │   ├── mod.rs
-│   │   └── parts
-│   ├── graphql_schema
-│   │   ├── context.rs
-│   │   ├── mod.rs
-│   │   ├── parts
-│   │   ├── prebuilt
-│   │   ├── root_query.rs
-│   │   ├── service
-│   │   └── software
-│   ├── lib.rs
-│   ├── main.rs
-│   └── models
-│       ├── mod.rs
-│       └── parts
+│   ├── diesel_schema
+│   │   ├── mod.rs
+│   │   └── parts
+│   ├── graphql_schema
+│   │   ├── context.rs
+│   │   ├── mod.rs
+│   │   ├── parts
+│   │   ├── prebuilt
+│   │   ├── root_query.rs
+│   │   ├── service
+│   │   └── software
+│   ├── lib.rs
+│   ├── main.rs
+│   └── models
+│       ├── mod.rs
+│       └── parts
 └── tests
     └── integration_test.rs
+```
 
 ## Environment Variables
 
