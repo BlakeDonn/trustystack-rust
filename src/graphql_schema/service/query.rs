@@ -19,8 +19,11 @@ impl Service {
     }
 }
 
-pub fn get_services() -> Vec<Service> {
-    vec![
+pub struct ServiceQuery;
+#[juniper::graphql_object]
+impl ServiceQuery {
+    pub fn get_services() -> Vec<Service> {
+        vec![
         Service {
             name: "Workstations for Creators".to_string(),
             description: "Take your creative projects to new heights with meticulously designed workstations,  to support leading software like Maya, Redshift, Autodesk, Adobe Premiere, and Vegas. Coastal Configurations specializes in creating advanced computing solutions that cater specifically to the demands of high-end rendering and editing software. Each workstation is built to offer a seamless, quiet computing experience, ensuring reliability and top-tier performance, allowing you to focus on crafting stunning visuals and animations with your preferred software suite.".to_string(),
@@ -42,4 +45,5 @@ pub fn get_services() -> Vec<Service> {
             image_url: "services/gaming.jpg".to_string(),
         },
     ]
+    }
 }

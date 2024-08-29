@@ -1,32 +1,17 @@
+pub mod context;
+pub mod parts;
 pub mod prebuilt;
+pub mod root_query;
 pub mod service;
 pub mod software;
 
+use context::Context;
 use juniper::{EmptyMutation, EmptySubscription, RootNode};
+use root_query::RootQuery;
 
-pub struct Query;
-
-#[juniper::graphql_object]
-impl Query {
-    fn api_version() -> &str {
-        "1.0"
-    }
-
-    fn popular_prebuilts() -> Vec<prebuilt::Prebuilt> {
-        prebuilt::get_prebuilts()
-    }
-
-    fn services() -> Vec<service::Service> {
-        service::get_services()
-    }
-
-    fn software_solutions() -> Vec<software::Software> {
-        software::get_softwares()
-    }
-}
-
-pub type Schema = RootNode<'static, Query, EmptyMutation<()>, EmptySubscription<()>>;
+pub type Schema = RootNode<'static, RootQuery, EmptyMutation<Context>, EmptySubscription<Context>>;
 
 pub fn create_schema() -> Schema {
-    Schema::new(Query, EmptyMutation::new(), EmptySubscription::new())
+    Schema::new(RootQuery, EmptyMutation::new(), EmptySubscription::new())
 }
+
