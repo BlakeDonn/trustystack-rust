@@ -6,33 +6,34 @@ This project is organized into several key modules that manage backend logic, da
 ```plaintext
 .
 ├── Cargo.toml
+├── README.md
 ├── diesel.toml
 ├── migrations
-│   ├── 00000000000000_diesel_initial_setup
-│   │   ├── down.sql
-│   │   └── up.sql
-│   └── 2024-08-28-014654_create_cpu_table
-│       ├── down.sql
-│       └── up.sql
+│   ├── 00000000000000_diesel_initial_setup
+│   │   ├── down.sql
+│   │   └── up.sql
+│   └── 2024-08-28-014654_create_cpu_table
+│       ├── down.sql
+│       └── up.sql
 ├── src
-│   ├── diesel_schema
-│   │   ├── mod.rs
-│   │   └── parts
-│   ├── graphql_schema
-│   │   ├── context.rs
-│   │   ├── mod.rs
-│   │   ├── parts
-│   │   ├── prebuilt
-│   │   ├── root_query.rs
-│   │   ├── service
-│   │   └── software
-│   ├── lib.rs
-│   ├── main.rs
-│   └── models
-│       ├── mod.rs
-│       └── parts
+│   ├── diesel_schema
+│   │   └── parts
+│   ├── graphql_schema
+│   │   ├── context.rs
+│   │   ├── parts
+│   │   ├── prebuilt
+│   │   ├── root_query.rs
+│   │   ├── service
+│   │   └── software
+│   ├── lib.rs
+│   ├── main.rs
+│   └── models
+│       └── parts
 └── tests
     └── integration_test.rs
+
+15 directories, 12 files
+
 ```
 
 ## Environment Variables
