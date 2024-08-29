@@ -1,11 +1,13 @@
 use juniper::GraphQLObject;
 
+/// Represents the specification of a prebuilt computer.
 #[derive(GraphQLObject)]
 pub struct Spec {
     pub key: String,
     pub value: String,
 }
 
+/// Represents a prebuilt computer used in GraphQL queries.
 #[derive(GraphQLObject)]
 pub struct Prebuilt {
     pub name: String,
@@ -14,9 +16,11 @@ pub struct Prebuilt {
     pub specifications: Vec<Spec>,
 }
 
+/// Provides the queries related to prebuilt computers for GraphQL.
 pub struct PrebuiltQuery;
 
 impl PrebuiltQuery {
+    /// Returns a list of prebuilt computers as a vector of `Prebuilt` objects.
     pub fn get_prebuilts() -> Vec<Prebuilt> {
         vec![
             Prebuilt {
@@ -115,3 +119,5 @@ impl PrebuiltQuery {
         ]
     }
 }
+
+
