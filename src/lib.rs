@@ -16,7 +16,8 @@ pub async fn graphql_handler(
     data: web::Json<GraphQLRequest>,
     context: web::Data<Context>,
 ) -> Result<HttpResponse, actix_web::Error> {
+    log::info!("Received GraphQL request.");
     let res = data.execute(&schema, &context).await;
+    log::info!("GraphQL query executed.");
     Ok(HttpResponse::Ok().json(res))
 }
-

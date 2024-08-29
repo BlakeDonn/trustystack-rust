@@ -21,7 +21,6 @@ impl Software {
 
 pub struct SoftwareQuery;
 
-#[juniper::graphql_object]
 impl SoftwareQuery {
     pub fn get_softwares() -> Vec<Software> {
         vec![

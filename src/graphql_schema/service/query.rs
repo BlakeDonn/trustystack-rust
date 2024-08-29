@@ -20,7 +20,6 @@ impl Service {
 }
 
 pub struct ServiceQuery;
-#[juniper::graphql_object]
 impl ServiceQuery {
     pub fn get_services() -> Vec<Service> {
         vec![

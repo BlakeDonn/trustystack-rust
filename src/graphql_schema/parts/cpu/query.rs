@@ -34,7 +34,6 @@ impl From<CPU> for CpuGraphql {
 }
 
 pub struct CpuQuery;
-#[juniper::graphql_object(Context = Context)]
 impl CpuQuery {
     pub fn get_cpus(context: &Context) -> FieldResult<Vec<CpuGraphql>> {
         let mut connection = context.get_connection()?;

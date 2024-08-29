@@ -15,7 +15,7 @@ pub struct Prebuilt {
 }
 
 pub struct PrebuiltQuery;
-#[juniper::graphql_object]
+
 impl PrebuiltQuery {
     pub fn get_prebuilts() -> Vec<Prebuilt> {
         vec![

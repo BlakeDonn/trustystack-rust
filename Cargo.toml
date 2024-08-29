@@ -13,6 +13,8 @@ tokio = { version = "1", features = ["full"] }
 diesel = { version = "2.0", features = ["postgres", "chrono", "r2d2", "numeric"] }
 dotenv = "0.15"
 bigdecimal = "0.3"
+env_logger = "0.9"
+log = "0.4"
 
 [dev-dependencies]
 actix-rt = "2"
