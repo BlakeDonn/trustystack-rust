@@ -1,9 +1,11 @@
+/// Represents a software product used in GraphQL queries.
 pub struct Software {
     pub name: String,
     pub description: String,
     pub image_url: String,
 }
 
+/// Implements GraphQL queries for the `Software` struct.
 #[juniper::graphql_object]
 impl Software {
     fn name(&self) -> &str {
@@ -19,9 +21,11 @@ impl Software {
     }
 }
 
+/// Provides the queries related to software products for GraphQL.
 pub struct SoftwareQuery;
 
 impl SoftwareQuery {
+    /// Returns a list of software products as a vector of `Software` objects.
     pub fn get_softwares() -> Vec<Software> {
         vec![
             Software {
@@ -47,3 +51,4 @@ impl SoftwareQuery {
         ]
     }
 }
+

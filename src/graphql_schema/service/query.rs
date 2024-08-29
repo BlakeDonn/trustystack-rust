@@ -1,9 +1,11 @@
+/// Represents a service offered, used in GraphQL queries.
 pub struct Service {
     pub name: String,
     pub description: String,
     pub image_url: String,
 }
 
+/// Implements GraphQL queries for the `Service` struct.
 #[juniper::graphql_object]
 impl Service {
     fn name(&self) -> &str {
@@ -19,8 +21,11 @@ impl Service {
     }
 }
 
+/// Provides the queries related to services for GraphQL.
 pub struct ServiceQuery;
+
 impl ServiceQuery {
+    /// Returns a list of services as a vector of `Service` objects.
     pub fn get_services() -> Vec<Service> {
         vec![
         Service {
@@ -46,3 +51,4 @@ impl ServiceQuery {
     ]
     }
 }
+

@@ -4,6 +4,7 @@ use crate::models::parts::cpu::CPU;
 use diesel::prelude::*;
 use juniper::{FieldResult, GraphQLObject};
 
+/// Represents the CPU structure used in GraphQL queries.
 #[derive(GraphQLObject)]
 pub struct CpuGraphql {
     pub id: i32,
@@ -17,6 +18,7 @@ pub struct CpuGraphql {
     pub smt: bool,
 }
 
+/// Converts the Diesel CPU model to the GraphQL CPU model.
 impl From<CPU> for CpuGraphql {
     fn from(cpu: CPU) -> Self {
         CpuGraphql {
@@ -33,8 +35,11 @@ impl From<CPU> for CpuGraphql {
     }
 }
 
+/// Provides the CPU-related queries for GraphQL.
 pub struct CpuQuery;
+
 impl CpuQuery {
+    /// Fetches all CPUs from the database and returns them as a vector of `CpuGraphql` objects.
     pub fn get_cpus(context: &Context) -> FieldResult<Vec<CpuGraphql>> {
         let mut connection = context.get_connection()?;
         let items = DieselCpu::table.load::<CPU>(&mut connection)?;
