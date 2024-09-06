@@ -21,4 +21,3 @@ pub async fn graphql_handler(
     log::info!("GraphQL query executed."); // Log when the GraphQL query is executed.
     Ok(HttpResponse::Ok().json(res)) // Return the result as a JSON response.
 }
-

@@ -20,6 +20,12 @@ log = "0.4"
 actix-rt = "2"
 actix-web = "4"
 
+[profile.release]
+opt-level = "z"
+lto = "thin"
+codegen-units = 1
+panic = "abort"
+
 [lib]
 path = "src/lib.rs"
 
