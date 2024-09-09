@@ -24,4 +24,3 @@ impl Context {
 
 /// Required to implement Juniper's `Context` trait for integration with GraphQL.
 impl juniper::Context for Context {}
-
