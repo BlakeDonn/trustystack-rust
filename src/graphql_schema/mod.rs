@@ -16,4 +16,3 @@ pub type Schema = RootNode<'static, RootQuery, EmptyMutation<Context>, EmptySubs
 pub fn create_schema() -> Schema {
     Schema::new(RootQuery, EmptyMutation::new(), EmptySubscription::new())
 }
-
