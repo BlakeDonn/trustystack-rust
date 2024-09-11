@@ -46,3 +46,33 @@ impl CpuQuery {
         Ok(items.into_iter().map(CpuGraphql::from).collect())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::models::parts::cpu::CPU;
+    use bigdecimal::BigDecimal;
+    use std::str::FromStr;
+
+    #[test]
+    fn test_cpu_graphql_conversion() {
+        let cpu = CPU {
+            id: 1,
+            name: String::from("Test CPU"),
+            price: BigDecimal::from_str("299.99").unwrap(),
+            core_count: 8,
+            core_clock: String::from("3.5GHz"),
+            boost_clock: String::from("4.2GHz"),
+            tdp: 65,
+            integrated_graphics: Some(String::from("Intel UHD")),
+            smt: true,
+        };
+
+        let cpu_graphql = CpuGraphql::from(cpu);
+
+        assert_eq!(cpu_graphql.id, 1);
+        assert_eq!(cpu_graphql.name, "Test CPU");
+        assert_eq!(cpu_graphql.core_count, 8);
+        assert_eq!(cpu_graphql.integrated_graphics.unwrap(), "Intel UHD");
+    }
+}

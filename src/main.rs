@@ -1,10 +1,10 @@
-use crate::graphql_schema::context::Context;
 use actix_web::{guard, web, App, HttpServer};
 use diesel::r2d2::{ConnectionManager, Pool}; // Imports for managing database connections.
 use diesel::PgConnection; // PostgreSQL connection type from Diesel.
 use dotenv::dotenv; // Dotenv to load environment variables from a .env file.
 use env_logger; // Logger initialization for logging.
 use log::{error, info}; // Macros for logging informational and error messages.
+use rust_backend::graphql_schema::context::Context;
 use rust_backend::{graphql_handler, graphql_schema}; // Importing the graphql handler and schema.
 use std::env; // Standard library's environment handling.
 use std::sync::Arc; // Arc for shared ownership of the GraphQL schema.

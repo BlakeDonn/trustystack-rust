@@ -1,21 +1,31 @@
-use actix_web::{test, App};
-use std::sync::Arc;
-use rust_backend::{schema, graphql_handler}; // Adjust the path based on your project structure
+mod utils;
+
+use actix_web::test;
+use diesel::r2d2::{ConnectionManager, Pool};
+use diesel::PgConnection;
+use dotenv::dotenv;
+use rust_backend::graphql_handler;
+use std::env;
 
 #[actix_rt::test]
-async fn test_graphql_endpoint() {
-    let schema = Arc::new(schema::create_schema());
+async fn test_database_connection() {
+    dotenv().ok();
 
-    let app = test::init_service(
-        App::new()
-            .app_data(actix_web::web::Data::new(schema.clone()))
-            .service(
-                actix_web::web::resource("/graphql")
-                    .guard(actix_web::guard::Post())
-                    .to(graphql_handler),
-            ),
-    )
-    .await;
+    // Check the database connection
+    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    println!("Database url: {:?}", database_url);
+    let manager = ConnectionManager::<PgConnection>::new(database_url);
+    let pool = Pool::builder()
+        .build(manager)
+        .expect("Failed to create pool.");
+
+    let _conn = pool.get().expect("Failed to get a database connection");
+    println!("Successfully connected to the database");
+}
+
+#[actix_rt::test]
+async fn test_graphql_api_version() {
+    let app = setup_test_app!();
 
     let request = test::TestRequest::post()
         .uri("/graphql")
@@ -24,10 +34,23 @@ async fn test_graphql_endpoint() {
         .to_request();
 
     let response = test::call_service(&app, request).await;
-    assert!(response.status().is_success());
-
     let body = test::read_body(response).await;
-    let expected_response = r#"{"data":{"apiVersion":"1.0"}}"#;
-    assert_eq!(body, expected_response);
+
+    assert_eq!(body, r#"{"data":{"apiVersion":"1.0"}}"#);
 }
 
+#[actix_rt::test]
+async fn test_root_query_api_version() {
+    let app = setup_test_app!();
+
+    let request = test::TestRequest::post()
+        .uri("/graphql")
+        .insert_header(("Content-Type", "application/json"))
+        .set_payload(r#"{"query": "{ apiVersion }"}"#)
+        .to_request();
+
+    let response = test::call_service(&app, request).await;
+    let body = test::read_body(response).await;
+
+    assert_eq!(body, r#"{"data":{"apiVersion":"1.0"}}"#);
+}
