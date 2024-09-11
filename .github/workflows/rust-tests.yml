@@ -1,0 +1,51 @@
+name: Rust Tests
+
+# Run this workflow on each pull request targeting the 'main' branch
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Run Rust Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the code
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Install Rust
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+        profile: minimal
+        components: clippy
+
+    # Install dependencies and run tests
+    - name: Run tests
+      run: |
+        cargo clippy -- -D warnings  # Lint with clippy
+        cargo test                  # Run tests
+
+    - name: Cache cargo registry
+      uses: actions/cache@v3
+      with:
+        path: ~/.cargo/registry
+        key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-registry-
+
+    - name: Cache cargo build
+      uses: actions/cache@v3
+      with:
+        path: target
+        key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-build-
+
+
+
