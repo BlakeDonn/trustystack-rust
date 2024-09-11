@@ -30,6 +30,33 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    # Cache Cargo dependencies
+    - name: Cache Cargo registry
+      uses: actions/cache@v3
+      with:
+        path: ~/.cargo/registry
+        key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-registry-
+
+    - name: Cache Cargo build
+      uses: actions/cache@v3
+      with:
+        path: target
+        key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-build-
+
+    # Cache Diesel CLI binary
+    - name: Cache Diesel CLI
+      uses: actions/cache@v3
+      with:
+        path: ~/.cargo/bin/diesel
+        key: ${{ runner.os }}-diesel-cli
+        restore-keys: |
+          ${{ runner.os }}-diesel-cli
+
+    # Set up Rust
     - name: Set up Rust
       uses: actions-rs/toolchain@v1
       with:
@@ -37,12 +64,15 @@ jobs:
         override: true
         profile: minimal
 
-    # Install Diesel CLI
+    # Install Diesel CLI if not cached
     - name: Install Diesel CLI
       run: |
-        cargo install diesel_cli --no-default-features --features postgres
+        if ! command -v diesel &> /dev/null
+        then
+          cargo install diesel_cli --no-default-features --features postgres
+        fi
 
-    # Wait for PostgreSQL to be ready (use sleep or dockerize as previously discussed)
+    # Wait for PostgreSQL
     - name: Wait for PostgreSQL
       run: sleep 10s
 
