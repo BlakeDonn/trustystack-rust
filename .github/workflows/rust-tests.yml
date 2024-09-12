@@ -1,0 +1,86 @@
+name: Rust Tests with Database
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Run Rust Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:13
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+
+    env:
+      DATABASE_URL: postgres://test_user:test_password@localhost:5432/test_db
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Cache Cargo dependencies
+    - name: Cache Cargo registry
+      uses: actions/cache@v3
+      with:
+        path: ~/.cargo/registry
+        key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-registry-
+
+    - name: Cache Cargo build
+      uses: actions/cache@v3
+      with:
+        path: target
+        key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-build-
+
+    # Cache Diesel CLI binary
+    - name: Cache Diesel CLI
+      uses: actions/cache@v3
+      with:
+        path: ~/.cargo/bin/diesel
+        key: ${{ runner.os }}-diesel-cli
+        restore-keys: |
+          ${{ runner.os }}-diesel-cli
+
+    # Set up Rust
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+        profile: minimal
+
+    # Install Diesel CLI if not cached
+    - name: Install Diesel CLI
+      run: |
+        if ! command -v diesel &> /dev/null
+        then
+          cargo install diesel_cli --no-default-features --features postgres
+        fi
+
+    # Wait for PostgreSQL
+    - name: Wait for PostgreSQL
+      run: sleep 10s
+
+    # Run Diesel migrations
+    - name: Run Diesel migrations
+      run: diesel migration run
+
+    # Run Rust tests
+    - name: Run Rust tests
+      run: cargo test -- --test-threads=1
+
