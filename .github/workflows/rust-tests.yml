@@ -7,8 +7,7 @@ on:
   pull_request:
     branches:
       - main
-  workflow_call:  # Allows this to be called by other workflows
-    secrets: inherit
+  workflow_call:
 
 jobs:
   test:
@@ -32,31 +31,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # Cache Cargo dependencies
-    - name: Cache Cargo registry
-      uses: actions/cache@v3
-      with:
-        path: ~/.cargo/registry
-        key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-cargo-registry-
+    # Print the working directory to check where we are
+    - name: Print working directory
+      run: pwd
 
-    - name: Cache Cargo build
-      uses: actions/cache@v3
-      with:
-        path: target
-        key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-cargo-build-
-
-    # Cache Diesel CLI binary
-    - name: Cache Diesel CLI
-      uses: actions/cache@v3
-      with:
-        path: ~/.cargo/bin/diesel
-        key: ${{ runner.os }}-diesel-cli
-        restore-keys: |
-          ${{ runner.os }}-diesel-cli
+    # List files to check the repository structure
+    - name: List files
+      run: ls -al
 
     # Set up Rust
     - name: Set up Rust
@@ -66,7 +47,7 @@ jobs:
         override: true
         profile: minimal
 
-    # Install Diesel CLI if not cached
+    # Install Diesel CLI
     - name: Install Diesel CLI
       run: |
         if ! command -v diesel &> /dev/null
@@ -78,13 +59,19 @@ jobs:
     - name: Wait for PostgreSQL
       run: sleep 10s
 
-    # Run Diesel migrations from the correct directory
+    # Conditionally set the working directory based on where we are
     - name: Run Diesel migrations
-      working-directory: backend/rust  # Specify the Rust project directory
-      run: diesel migration run
+      run: |
+        if [ -f "backend/rust/Cargo.toml" ]; then
+          cd backend/rust
+        fi
+        diesel migration run
 
-    # Run Rust tests
+    # Run Rust tests, also conditionally set the working directory
     - name: Run Rust tests
-      working-directory: backend/rust  # Specify the Rust project directory
-      run: cargo test -- --test-threads=1
+      run: |
+        if [ -f "backend/rust/Cargo.toml" ]; then
+          cd backend/rust
+        fi
+        cargo test -- --test-threads=1
 
