@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - main
+  workflow_call:  # This makes the workflow reusable by other repositories
 
 jobs:
   test:
