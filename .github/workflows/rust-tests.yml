@@ -7,7 +7,8 @@ on:
   pull_request:
     branches:
       - main
-  workflow_call:  # This makes the workflow reusable by other repositories
+  workflow_call:  # Allows this to be called by other workflows
+    secrets: inherit
 
 jobs:
   test:
@@ -77,11 +78,13 @@ jobs:
     - name: Wait for PostgreSQL
       run: sleep 10s
 
-    # Run Diesel migrations
+    # Run Diesel migrations from the correct directory
     - name: Run Diesel migrations
+      working-directory: backend/rust  # Specify the Rust project directory
       run: diesel migration run
 
     # Run Rust tests
     - name: Run Rust tests
+      working-directory: backend/rust  # Specify the Rust project directory
       run: cargo test -- --test-threads=1
 
