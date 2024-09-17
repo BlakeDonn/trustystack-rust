@@ -8,6 +8,11 @@ on:
     branches:
       - main
   workflow_call:
+    inputs:
+      ref:
+        description: 'Git ref to checkout'
+        required: false
+        type: string  # Added type property
     secrets:
       PAT_TOKEN:
         description: 'Personal Access Token with repo access'
@@ -35,12 +40,22 @@ jobs:
       DATABASE_URL: postgres://test_user:test_password@localhost:5432/test_db
 
     steps:
+    # Determine the ref to checkout
+    - name: Set checkout ref
+      id: ref
+      run: |
+        if [ -n "${{ inputs.ref }}" ]; then
+          echo "ref=${{ inputs.ref }}" >> $GITHUB_OUTPUT
+        else
+          echo "ref=${{ github.ref }}" >> $GITHUB_OUTPUT
+        fi
+
     # Checkout the Rust repository into 'rust_repo' directory
     - name: Checkout Rust repository
       uses: actions/checkout@v3
       with:
         repository: BlakeDonn/trustystack-rust
-        ref: ${{ github.ref }}
+        ref: ${{ steps.ref.outputs.ref }}
         token: ${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
         path: rust_repo
 
@@ -91,3 +106,4 @@ jobs:
     - name: Run Rust tests
       working-directory: ${{ steps.workdir.outputs.workdir }}
       run: cargo test -- --test-threads=1
+
