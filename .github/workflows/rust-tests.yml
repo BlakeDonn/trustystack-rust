@@ -1,9 +1,17 @@
 name: Rust Tests with Database
 
 on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
   workflow_call:
     secrets:
-      GITHUB_TOKEN: {}  # Ensure the calling workflow passes the GITHUB_TOKEN
+      PAT_RUST_REPO:
+        description: 'Personal Access Token with repo access'
+        required: true  # Make PAT_TOKEN optional
 
 jobs:
   test:
@@ -30,9 +38,16 @@ jobs:
     - name: Checkout Rust repository
       uses: actions/checkout@v3
       with:
-        repository: BlakeDonn/trustystack-rust
-        ref: ${{ github.ref }}
-        token: ${{ secrets.GITHUB_TOKEN }}
+        # Use PAT_TOKEN if provided; else, default to GITHUB_TOKEN
+        token: ${{ secrets.PAT_RUST_REPO || secrets.GITHUB_TOKEN }}
+
+    # Optional: Print the working directory
+    - name: Print working directory
+      run: pwd
+
+    # Optional: List files to check the repository structure
+    - name: List files
+      run: ls -al
 
     # Set up Rust
     - name: Set up Rust
