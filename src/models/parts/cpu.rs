@@ -1,8 +1,9 @@
 use crate::diesel_schema::parts::cpu::cpu;
 use bigdecimal::BigDecimal;
+use diesel::Selectable;
 use diesel::prelude::*;
 
-#[derive(Queryable, Insertable)]
+#[derive(Queryable, Insertable, Selectable)]
 #[diesel(table_name = cpu)]
 pub struct CPU {
     pub id: i32,
