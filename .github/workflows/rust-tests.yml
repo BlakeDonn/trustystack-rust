@@ -9,9 +9,9 @@ on:
       - main
   workflow_call:
     secrets:
-      PAT_RUST_REPO:
+      PAT_TOKEN:
         description: 'Personal Access Token with repo access'
-        required: true  # Make PAT_TOKEN optional
+        required: false
 
 jobs:
   test:
@@ -35,19 +35,32 @@ jobs:
       DATABASE_URL: postgres://test_user:test_password@localhost:5432/test_db
 
     steps:
+    # Checkout the Rust repository into 'rust_repo' directory
     - name: Checkout Rust repository
       uses: actions/checkout@v3
       with:
-        # Use PAT_TOKEN if provided; else, default to GITHUB_TOKEN
-        token: ${{ secrets.PAT_RUST_REPO || secrets.GITHUB_TOKEN }}
+        repository: BlakeDonn/trustystack-rust
+        ref: ${{ github.ref }}
+        token: ${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
+        path: rust_repo
 
-    # Optional: Print the working directory
+    # Determine the working directory
+    - name: Set working directory
+      id: workdir
+      run: |
+        if [ -d "rust_repo" ]; then
+          echo "workdir=rust_repo" >> $GITHUB_OUTPUT
+        else
+          echo "workdir=." >> $GITHUB_OUTPUT
+        fi
+
+    # Print the working directory (optional)
     - name: Print working directory
-      run: pwd
+      run: echo "Working directory is ${{ steps.workdir.outputs.workdir }}"
 
-    # Optional: List files to check the repository structure
-    - name: List files
-      run: ls -al
+    # List files in the working directory (optional)
+    - name: List files in working directory
+      run: ls -al ${{ steps.workdir.outputs.workdir }}
 
     # Set up Rust
     - name: Set up Rust
@@ -69,11 +82,12 @@ jobs:
     - name: Wait for PostgreSQL
       run: sleep 10s
 
-    # Run Diesel migrations
+    # Run Diesel migrations in the correct directory
     - name: Run Diesel migrations
+      working-directory: ${{ steps.workdir.outputs.workdir }}
       run: diesel migration run
 
-    # Run Rust tests
+    # Run Rust tests in the correct directory
     - name: Run Rust tests
+      working-directory: ${{ steps.workdir.outputs.workdir }}
       run: cargo test -- --test-threads=1
-
