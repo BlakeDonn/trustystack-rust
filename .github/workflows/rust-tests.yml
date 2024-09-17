@@ -12,6 +12,7 @@ on:
       ref:
         description: 'Git ref to checkout'
         required: false
+        type: string  # Added type property
     secrets:
       PAT_TOKEN:
         description: 'Personal Access Token with repo access'
