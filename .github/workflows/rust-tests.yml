@@ -1,18 +1,17 @@
 name: Rust Tests with Database
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
   workflow_call:
+    secrets:
+      GITHUB_TOKEN: {}  # Ensure the calling workflow passes the GITHUB_TOKEN
 
 jobs:
   test:
     name: Run Rust Tests
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read  # Necessary for actions/checkout
 
     services:
       postgres:
@@ -28,16 +27,12 @@ jobs:
       DATABASE_URL: postgres://test_user:test_password@localhost:5432/test_db
 
     steps:
-    - name: Checkout repository
+    - name: Checkout Rust repository
       uses: actions/checkout@v3
-
-    # Print the working directory to check where we are
-    - name: Print working directory
-      run: pwd
-
-    # List files to check the repository structure
-    - name: List files
-      run: ls -al
+      with:
+        repository: BlakeDonn/trustystack-rust
+        ref: ${{ github.ref }}
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     # Set up Rust
     - name: Set up Rust
@@ -59,19 +54,11 @@ jobs:
     - name: Wait for PostgreSQL
       run: sleep 10s
 
-    # Conditionally set the working directory based on where we are
+    # Run Diesel migrations
     - name: Run Diesel migrations
-      run: |
-        if [ -f "backend/rust/Cargo.toml" ]; then
-          cd backend/rust
-        fi
-        diesel migration run
+      run: diesel migration run
 
-    # Run Rust tests, also conditionally set the working directory
+    # Run Rust tests
     - name: Run Rust tests
-      run: |
-        if [ -f "backend/rust/Cargo.toml" ]; then
-          cd backend/rust
-        fi
-        cargo test -- --test-threads=1
+      run: cargo test -- --test-threads=1
 
