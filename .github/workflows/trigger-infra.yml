@@ -1,0 +1,22 @@
+name: Trigger Infra Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  trigger-deployment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Infra Repository Deployment
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.INFRA_REPO_PAT }}
+          repository: BlakeDonn/trustystack-cicd 
+          event-type: deploy
+          client-payload: 
+            ref: ${{ github.ref }}
+            sha: ${{ github.sha }}
+
