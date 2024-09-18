@@ -1,0 +1,28 @@
+# trustystack-rust/.github/workflows/trigger-infra.yml
+name: Trigger Infra Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  trigger-deployment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Rust Repository
+        uses: actions/checkout@v3
+        with:
+          repository: BlakeDonn/trustystack-rust
+          path: backend/rust
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: main
+
+      - name: Trigger Infra Repository Deployment
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.INFRA_REPO_PAT }}
+          repository: BlakeDonn/trustystack-cicd
+          event-type: deploy
+
