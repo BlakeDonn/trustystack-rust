@@ -35,75 +35,87 @@ jobs:
           POSTGRES_USER: test_user
           POSTGRES_PASSWORD: test_password
           POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     env:
       DATABASE_URL: postgres://test_user:test_password@localhost:5432/test_db
 
     steps:
-    # Determine the ref to checkout
-    - name: Set checkout ref
-      id: ref
-      run: |
-        if [ -n "${{ inputs.ref }}" ]; then
-          echo "ref=${{ inputs.ref }}" >> $GITHUB_OUTPUT
-        else
-          echo "ref=${{ github.ref }}" >> $GITHUB_OUTPUT
-        fi
+      # Determine the ref to checkout
+      - name: Set checkout ref
+        id: ref
+        run: |
+          if [ -n "${{ inputs.ref }}" ]; then
+            echo "ref=${{ inputs.ref }}" >> $GITHUB_OUTPUT
+          else
+            echo "ref=${{ github.ref }}" >> $GITHUB_OUTPUT
+          fi
 
-    # Checkout the Rust repository into 'rust_repo' directory
-    - name: Checkout Rust repository
-      uses: actions/checkout@v3
-      with:
-        repository: BlakeDonn/trustystack-rust
-        ref: ${{ steps.ref.outputs.ref }}
-        token: ${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
-        path: rust_repo
+      # Checkout the Rust repository into 'rust_repo' directory
+      - name: Checkout Rust repository
+        uses: actions/checkout@v3
+        with:
+          repository: BlakeDonn/trustystack-rust
+          ref: ${{ steps.ref.outputs.ref }}
+          token: ${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
+          path: rust_repo
 
-    # Determine the working directory
-    - name: Set working directory
-      id: workdir
-      run: |
-        if [ -d "rust_repo" ]; then
-          echo "workdir=rust_repo" >> $GITHUB_OUTPUT
-        else
-          echo "workdir=." >> $GITHUB_OUTPUT
-        fi
+      # Determine the working directory
+      - name: Set working directory
+        id: workdir
+        run: |
+          if [ -d "rust_repo" ]; then
+            echo "workdir=rust_repo" >> $GITHUB_OUTPUT
+          else
+            echo "workdir=." >> $GITHUB_OUTPUT
+          fi
 
-    # Print the working directory (optional)
-    - name: Print working directory
-      run: echo "Working directory is ${{ steps.workdir.outputs.workdir }}"
+      # Print the working directory (optional)
+      - name: Print working directory
+        run: echo "Working directory is ${{ steps.workdir.outputs.workdir }}"
 
-    # List files in the working directory (optional)
-    - name: List files in working directory
-      run: ls -al ${{ steps.workdir.outputs.workdir }}
+      # List files in the working directory (optional)
+      - name: List files in working directory
+        run: ls -al ${{ steps.workdir.outputs.workdir }}
 
-    # Set up Rust
-    - name: Set up Rust
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable
-        override: true
-        profile: minimal
+      # Set up Rust
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          profile: minimal
 
-    # Install Diesel CLI
-    - name: Install Diesel CLI
-      run: |
-        if ! command -v diesel &> /dev/null
-        then
-          cargo install diesel_cli --no-default-features --features postgres
-        fi
+      # Build the project (including the migrate binary)
+      - name: Build Project
+        working-directory: ${{ steps.workdir.outputs.workdir }}
+        run: cargo build --release --bin migrate --bin rust-backend
 
-    # Wait for PostgreSQL
-    - name: Wait for PostgreSQL
-      run: sleep 10s
+      # Ensure migrate binary is executable (optional)
+      - name: Make Migrate Binary Executable
+        working-directory: ${{ steps.workdir.outputs.workdir }}
+        run: chmod +x ./target/release/migrate
 
-    # Run Diesel migrations in the correct directory
-    - name: Run Diesel migrations
-      working-directory: ${{ steps.workdir.outputs.workdir }}
-      run: diesel migration run
+      # Wait for PostgreSQL to be ready
+      - name: Wait for PostgreSQL
+        run: |
+          for i in {1..10}; do
+            pg_isready -h localhost -p 5432 -U test_user -d test_db && break
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
 
-    # Run Rust tests in the correct directory
-    - name: Run Rust tests
-      working-directory: ${{ steps.workdir.outputs.workdir }}
-      run: cargo test -- --test-threads=1
+      # Run Migrations using the migrate binary
+      - name: Run Migrations
+        working-directory: ${{ steps.workdir.outputs.workdir }}
+        run: ./target/release/migrate
+
+      # Run Rust tests
+      - name: Run Rust tests
+        working-directory: ${{ steps.workdir.outputs.workdir }}
+        run: cargo test -- --test-threads=1
 
