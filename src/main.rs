@@ -1,27 +1,25 @@
 use actix_web::{guard, web, App, HttpServer};
-use diesel::r2d2::{ConnectionManager, Pool}; // Imports for managing database connections.
-use diesel::PgConnection; // PostgreSQL connection type from Diesel.
-use dotenv::dotenv; // Dotenv to load environment variables from a .env file.
-use log::{error, info}; // Macros for logging informational and error messages.
+use diesel::r2d2::{ConnectionManager, Pool};
+use diesel::PgConnection;
+use dotenv::dotenv;
+use log::{error, info};
 use rust_backend::graphql_schema::context::Context;
-use rust_backend::{graphql_handler, graphql_schema}; // Importing the graphql handler and schema.
-use std::env; // Standard library's environment handling.
-use std::sync::Arc; // Arc for shared ownership of the GraphQL schema.
+use rust_backend::{graphql_handler, graphql_schema};
+use std::env;
+use std::sync::Arc;
 
+/// Entry point of the Rust backend server, responsible for initializing the environment,
+/// setting up the database connection, and starting the HTTP server.
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    // Initial print for Docker logs
     println!("Starting the Rust backend server...");
 
-    // Initialize the logger
     env_logger::init();
     info!("Logger initialized");
 
-    // Load environment variables from .env file
     dotenv().ok();
     info!("Loaded environment variables from .env");
 
-    // Retrieve and log the DATABASE_URL
     let database_url = match env::var("DATABASE_URL") {
         Ok(url) => {
             println!("DATABASE_URL found: {}", url);
@@ -35,7 +33,6 @@ async fn main() -> std::io::Result<()> {
         }
     };
 
-    // Create the database connection pool
     let manager = ConnectionManager::<PgConnection>::new(&database_url);
     let pool = match Pool::builder().build(manager) {
         Ok(pool) => {
@@ -50,11 +47,9 @@ async fn main() -> std::io::Result<()> {
         }
     };
 
-    // Set up the GraphQL schema and Actix context
     let schema = Arc::new(graphql_schema::create_schema());
     let context = web::Data::new(Context::new(pool));
 
-    // Start the Actix-Web server
     let server = HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(schema.clone()))
@@ -70,12 +65,12 @@ async fn main() -> std::io::Result<()> {
     match server {
         Ok(server) => {
             info!("Server started successfully at http://0.0.0.0:8080");
-            println!("Server started successfully at http://0.0.0.0:8080"); // Print to stdout for Docker logs
+            println!("Server started successfully at http://0.0.0.0:8080");
             server.run().await
         }
         Err(e) => {
             error!("Failed to start server: {}", e);
-            println!("Error: Failed to start server: {}", e); // Print to stdout for Docker logs
+            println!("Error: Failed to start server: {}", e);
             std::process::exit(1);
         }
     }
