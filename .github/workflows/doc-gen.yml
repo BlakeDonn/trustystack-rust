@@ -2,7 +2,7 @@ name: Deploy Documentation
 
 on:
   push:
-    branches: [deploy-pages]  # Ensure this is the correct branch
+    branches: [deploy-pages]  
 
 permissions:
   contents: read
@@ -63,7 +63,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     runs-on: ubuntu-latest
-    needs: build # Ensure this job depends on 'build' finishing successfully
+    needs: build 
 
     steps:
       # Deploy the uploaded artifact to GitHub Pages
