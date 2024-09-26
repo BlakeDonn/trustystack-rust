@@ -116,4 +116,3 @@ jobs:
       - name: Run Rust tests
         working-directory: ${{ steps.workdir.outputs.workdir }}
         run: cargo test -- --test-threads=1
-

@@ -6,4 +6,3 @@ echo "Running database migrations..."
 
 echo "Starting the application..."
 exec /usr/local/bin/rust-backend
-
