@@ -16,6 +16,7 @@ dotenv = "0.15"
 bigdecimal = "0.4.5"
 env_logger = "0.9"
 log = "0.4"
+thiserror = "1.0"
 
 [dev-dependencies]
 actix-rt = "2"
