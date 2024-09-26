@@ -18,4 +18,3 @@ Thumbs.db
 
 # Other ignore rules for other backend components or data files
 /data/db-scripts/*.log
-

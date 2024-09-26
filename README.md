@@ -172,4 +172,3 @@ This file defines the Rust struct that corresponds to the `cpu` table in the dat
 - **Attributes**:
   - `#[derive(Queryable, Insertable)]`: Indicates that the `CPU` struct can be used for querying and inserting data in the `cpu` table.
   - `#[diesel(table_name = cpu)]`: Associates the `CPU` struct with the `cpu` table in the database.
-

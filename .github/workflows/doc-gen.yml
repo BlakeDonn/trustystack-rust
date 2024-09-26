@@ -1,0 +1,32 @@
+name: Documentation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  doc:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Rust
+      uses: actions/setup-rust@v1
+      with:
+        rust-version: stable
+
+    - name: Install dependencies
+      run: |
+        cargo install diesel_cli --no-default-features --features postgres
+
+    - name: Run rustdoc
+      run: cargo doc --no-deps --document-private-items
+
+    - name: Upload Documentation
+      uses: actions/upload-artifact@v3
+      with:
+        name: documentation
+        path: target/doc
