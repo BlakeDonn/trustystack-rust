@@ -40,4 +40,3 @@ COPY --from=builder /app/migrations ./migrations
 
 # Set the entrypoint
 ENTRYPOINT ["./entrypoint.sh"]
-

@@ -25,4 +25,3 @@ jobs:
           token: ${{ secrets.INFRA_REPO_PAT }}
           repository: BlakeDonn/trustystack-cicd
           event-type: deploy
-
