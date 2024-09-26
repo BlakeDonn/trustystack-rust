@@ -1,5 +1,3 @@
-// src/migration.rs
-
 use crate::types::errors::MigrationError;
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
@@ -100,25 +98,21 @@ mod tests {
     #[test]
     fn test_successful_migration() {
         dotenv().ok();
-        // Use TEST_DATABASE_URL for testing
         let database_url = env::var("TEST_DATABASE_URL").expect("TEST_DATABASE_URL must be set");
         env::set_var("DATABASE_URL", &database_url);
 
         let result = run();
-
         assert!(result.is_ok(), "Migrations should complete successfully");
     }
 
     /// Tests the advisory lock mechanism to prevent concurrent migrations.
     #[test]
-
     fn test_advisory_lock() {
         dotenv().ok();
         let database_url = env::var("TEST_DATABASE_URL").expect("TEST_DATABASE_URL must be set");
         let lock_key = generate_lock_key("rust_backend_test");
 
         let barrier = Arc::new(Barrier::new(2));
-
         let barrier_clone = barrier.clone();
         let database_url_clone = database_url.clone();
 
@@ -126,9 +120,7 @@ mod tests {
             let _lock = AdvisoryLock::new(&database_url_clone, lock_key)
                 .expect("Thread 1: Failed to acquire lock");
             barrier_clone.wait(); // Signal that the lock has been acquired
-                                  // Hold the lock for a short duration
             std::thread::sleep(std::time::Duration::from_secs(2));
-            // Lock is released when `_lock` goes out of scope
         });
 
         barrier.wait(); // Wait for the first thread to acquire the lock
@@ -150,18 +142,15 @@ mod tests {
     #[test]
     fn test_missing_database_url() {
         dotenv().ok();
-        // Temporarily unset DATABASE_URL
         let original_value = env::var("DATABASE_URL").ok();
         env::remove_var("DATABASE_URL");
 
         let result = run();
-
         assert!(
             matches!(result, Err(MigrationError::EnvVarError(_))),
             "Should return EnvVarError when DATABASE_URL is missing"
         );
 
-        // Restore the original value
         if let Some(value) = original_value {
             env::set_var("DATABASE_URL", value);
         }
@@ -175,13 +164,11 @@ mod tests {
         env::set_var("DATABASE_URL", "invalid_url");
 
         let result = run();
-
         assert!(
             matches!(result, Err(MigrationError::ConnectionError(_))),
             "Should return ConnectionError for invalid DATABASE_URL"
         );
 
-        // Restore the original value
         if let Some(value) = original_value {
             env::set_var("DATABASE_URL", value);
         }
