@@ -4,15 +4,14 @@ use actix_web::test;
 use diesel::r2d2::{ConnectionManager, Pool};
 use diesel::PgConnection;
 use dotenv::dotenv;
-use rust_backend::graphql_handler;
 use std::env;
 
 #[actix_rt::test]
 async fn test_database_connection() {
     dotenv().ok();
 
-    // Check the database connection
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let database_url = env::var("TEST_DATABASE_URL").expect("TEST_DATABASE_URL must be set");
+
     println!("Database url: {:?}", database_url);
     let manager = ConnectionManager::<PgConnection>::new(database_url);
     let pool = Pool::builder()

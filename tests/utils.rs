@@ -1,3 +1,5 @@
+// tests/utils.rs
+
 #[macro_export]
 macro_rules! setup_test_app {
     () => {{
@@ -5,15 +7,14 @@ macro_rules! setup_test_app {
         use diesel::r2d2::{ConnectionManager, Pool};
         use diesel::PgConnection;
         use dotenv::dotenv;
+        use rust_backend::graphql_handler;
         use rust_backend::graphql_schema::{context::Context, create_schema};
         use std::env;
         use std::sync::Arc;
-        use $crate::graphql_handler;
 
         dotenv().ok();
 
-        // Set up the database connection pool
-        let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+        let database_url = env::var("TEST_DATABASE_URL").expect("TEST_DATABASE_URL must be set");
         let manager = ConnectionManager::<PgConnection>::new(&database_url);
         let pool = Pool::builder()
             .build(manager)
@@ -37,3 +38,4 @@ macro_rules! setup_test_app {
         .await
     }};
 }
+
