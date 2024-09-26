@@ -38,4 +38,3 @@ macro_rules! setup_test_app {
         .await
     }};
 }
-

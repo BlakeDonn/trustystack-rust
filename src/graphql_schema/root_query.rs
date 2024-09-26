@@ -34,4 +34,3 @@ impl RootQuery {
         CpuQuery::get_cpus(context)
     }
 }
-

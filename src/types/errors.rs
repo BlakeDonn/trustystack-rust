@@ -21,4 +21,3 @@ pub enum MigrationError {
     #[error("Unexpected error: {0}")]
     BoxedError(#[from] Box<dyn Error + Send + Sync>),
 }
-
