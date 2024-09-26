@@ -1,3 +1,4 @@
+/// Library module containing the main components of the backend.
 pub mod diesel_schema;
 pub mod graphql_schema;
 pub mod migration;
@@ -9,10 +10,12 @@ use actix_web::{web, HttpResponse};
 use juniper::http::GraphQLRequest;
 use std::sync::Arc;
 
+/// Function to print a greeting message to the console.
 pub fn greet() {
     println!("Hello from the library!");
 }
 
+/// Handles GraphQL requests by executing the query and returning the response as JSON.
 pub async fn graphql_handler(
     schema: web::Data<Arc<graphql_schema::Schema>>,
     data: web::Json<GraphQLRequest>,
