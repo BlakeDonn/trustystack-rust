@@ -1,174 +1,201 @@
-# Project Overview
+# Rust / GQL api
 
-This project is organized into several key modules that manage backend logic, database interactions, and the GraphQL API. Below is a detailed overview of the most critical components and their functions.
+[![Deployment](https://github.com/BlakeDonn/trustystack-rust/actions/workflows/trigger-infra.yml/badge.svg)](https://github.com/blakedonn/trustystack-rust/actions)
 
-## Project Structure
+[![Doc Generation](https://github.com/BlakeDonn/trustystack-rust/actions/workflows/doc-gen.yml/badge.svg)](https://github.com/blakedonn/trustystack-rust/actions)
+
+[![Tests](https://github.com/BlakeDonn/trustystack-rust/actions/workflows/rust-tests.yml/badge.svg)](https://github.com/blakedonn/trustystack-rust/actions)
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Documentation](#documentation)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Database Setup](#database-setup)
+- [Running the Application](#running-the-application)
+- [Running Tests](#running-tests)
+- [Workflow Instructions](#workflow-instructions)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+
+## Overview
+
+The TrustyStack Rust Backend is a GraphQL API built with Rust, Actix-Web, Diesel, and Juniper. It provides endpoints for managing computer parts information, integrating with a PostgreSQL database.
+
+## Documentation
+
+Comprehensive documentation is available at:
+
+🔗 **[TrustyStack Rust Backend Documentation](https://blakedonn.github.io/trustystack-rust/rust_backend/index.html)**
+
+## Prerequisites
+
+- **Rust** (latest stable version)
+- **Cargo** (comes with Rust)
+- **PostgreSQL** (version 12 or higher)
+- **Diesel CLI** (for database migrations)
+- **Docker** (optional, for containerized deployment)
+
+## Installation
+
+### Clone the Repository
+
 ```plaintext
-.
-├── Cargo.toml
-├── README.md
-├── diesel.toml
-├── migrations
-│   ├── 00000000000000_diesel_initial_setup
-│   │   ├── down.sql
-│   │   └── up.sql
-│   └── 2024-08-28-014654_create_cpu_table
-│       ├── down.sql
-│       └── up.sql
-├── src
-│   ├── diesel_schema
-│   │   └── parts
-│   ├── graphql_schema
-│   │   ├── context.rs
-│   │   ├── parts
-│   │   ├── prebuilt
-│   │   ├── root_query.rs
-│   │   ├── service
-│   │   └── software
-│   ├── lib.rs
-│   ├── main.rs
-│   └── models
-│       └── parts
-└── tests
-    └── integration_test.rs
-
-15 directories, 12 files
-
+git clone https://github.com/yourusername/trustystack-rust.git
+cd trustystack-rust
 ```
 
-## Environment Variables
+### Install Dependencies
 
-- **`DATABASE_URL`**: Must be defined in a `.env` file, specifying the connection string for the PostgreSQL database. This URL is used to configure the connection pool that the application will use to interact with the database.
+```plaintext
+cargo build
+```
+
+## Configuration
+
+### Environment Variables
+
+Create a `.env` file in the root directory with the following content:
+
+```plaintext
+DATABASE_URL=postgres://username:password@localhost/database_name
+TEST_DATABASE_URL=postgres://username:password@localhost/test_database_name
+RUST_LOG=info
+```
+
+> **Note:** Replace `username`, `password`, `database_name`, and `test_database_name` with your actual PostgreSQL credentials and database names.
+
+## Database Setup
+
+### Install Diesel CLI
+
+```plaintext
+cargo install diesel_cli --no-default-features --features postgres
+```
+
+### Run Migrations
+
+```plaintext
+diesel setup
+diesel migration run
+```
 
 ## Running the Application
 
-1. Ensure your `.env` file is properly configured with `DATABASE_URL`.
-2. Start the server using `cargo run`. The server will be accessible at `http://127.0.0.1:8080/graphql` for handling GraphQL queries.
+### Running with Cargo
 
-## Key Files
+```plaintext
+cargo run
+```
 
-### `main.rs`
+The server will start at [http://0.0.0.0:8080](http://0.0.0.0:8080).
 
-- **Purpose**: Acts as the entry point for the application. Initializes and configures the Actix-Web server, manages environment variables, sets up a connection pool to the PostgreSQL database, and initializes the GraphQL schema.
-- **Details**:
-  - **Logger Initialization**: Uses `env_logger` to set up logging based on environment settings.
-  - **Environment Management**: Loads environment variables from a `.env` file via `dotenv`.
-  - **Database Connection Pool**: Sets up a connection pool using Diesel's `ConnectionManager` for PostgreSQL.
-  - **GraphQL Schema**: The GraphQL schema is initialized and shared across requests using an `Arc`.
-  - **HTTP Server Setup**: Configures and runs an Actix-Web server, handling requests to the `/graphql` endpoint.
+### Running with Docker
 
-### `lib.rs`
+#### Build the Docker Image
 
-- **Purpose**: Serves as a central module that ties together the various components of the application, such as the GraphQL schema, context, and models.
-- **Details**:
-  - **Modules**: Organizes code into modules, including `diesel_schema` for ORM, `graphql_schema` for GraphQL API, and `models` for data models.
-  - **GraphQL Request Handling**: Provides the `graphql_handler` function, which executes GraphQL requests and returns results as JSON.
-  - **Logging**: Logs key actions such as receiving and executing GraphQL requests.
+```plaintext
+docker build -t trustystack-rust-backend .
+```
 
+#### Run the Docker Container
 
+```plaintext
+docker run -p 8080:8080 --env-file .env trustystack-rust-backend
+```
 
-## GraphQL Schema Modules
+## Running Tests
 
-### `cpu/query.rs`
+```plaintext
+cargo test
+```
 
-This module handles the GraphQL queries related to CPUs, including fetching CPU data from the database and transforming it into the GraphQL structure.
+## Workflow Instructions
 
-- **CpuGraphql struct**: Represents the CPU structure used in GraphQL queries.
-- **From<CPU> for CpuGraphql**: Converts the Diesel CPU model to the GraphQL CPU model.
-- **CpuQuery struct**: Provides the CPU-related queries for GraphQL.
-  - **get_cpus(context: &Context) -> FieldResult<Vec<CpuGraphql>>**: Fetches all CPUs from the database and returns them as a vector of `CpuGraphql` objects.
+### Building the Application
 
-### `prebuilt.rs`
+#### Development Build
 
-This module handles GraphQL queries related to prebuilts, providing details on various prebuilt computer systems.
+```plaintext
+cargo build
+```
 
-- **Spec struct**: Represents the specification of a prebuilt computer.
-- **Prebuilt struct**: Represents a prebuilt computer used in GraphQL queries.
-- **PrebuiltQuery struct**: Provides the queries related to prebuilt computers for GraphQL.
-  - **get_prebuilts() -> Vec<Prebuilt>**: Returns a list of prebuilt computers as a vector of `Prebuilt`.
+#### Release Build
 
-### `service.rs`
+```plaintext
+cargo build --release
+```
 
-This module manages the GraphQL queries related to services offered.
+### Running Migrations Programmatically
 
-- **Service struct**: Represents a service used in GraphQL queries.
-  - **name() -> &str**: Returns the name of the service.
-  - **description() -> &str**: Returns the description of the service.
-  - **image_url() -> &str**: Returns the image URL of the service.
-- **ServiceQuery struct**: Provides the service-related queries for GraphQL.
-  - **get_services() -> Vec<Service>**: Returns a list of services as a vector of `Service`.
+You can run migrations using the embedded migration scripts:
 
-### `software.rs`
+```plaintext
+cargo run --bin migrate
+```
 
-This module handles GraphQL queries related to software solutions.
+### Linting and Formatting
 
-- **Software struct**: Represents a software used in GraphQL queries.
-  - **name() -> &str**: Returns the name of the software.
-  - **description() -> &str**: Returns the description of the software.
-  - **image_url() -> &str**: Returns the image URL of the software.
-- **SoftwareQuery struct**: Provides the software-related queries for GraphQL.
-  - **get_softwares() -> Vec<Software>**: Returns a list of software solutions as a vector of `Software`.
+Ensure your code adheres to Rust standards:
 
-### `context.rs`
+```plaintext
+cargo fmt
+cargo clippy
+```
 
-This module is responsible for managing the database connection context used in GraphQL queries.
+### Generating Documentation
 
-- **Context struct**: Represents the database connection context.
-  - **new(db: Pool<ConnectionManager<PgConnection>>) -> Self**: Creates a new `Context` with the provided database pool.
-  - **get_connection(&self) -> Result<PooledConnection<ConnectionManager<PgConnection>>, diesel::r2d2::PoolError>**: Retrieves a database connection from the pool.
+```plaintext
+cargo doc --no-deps --document-private-items
+```
 
-### `graphql_schema/mod.rs`
+Generated documentation can be found in the `target/doc` directory.
 
-This module serves as the entry point for all GraphQL schema-related modules.
+### Test Coverage
 
-- **Context module**: Provides the database connection context for GraphQL queries.
-- **RootNode type**: Represents the schema’s root node, which combines the `RootQuery`, `EmptyMutation`, and `EmptySubscription` types.
-- **create_schema() -> Schema**: Creates and returns the GraphQL schema with the root query, mutation, and subscription.
+To generate a test coverage report using `cargo tarpaulin`:
 
-### `root_query.rs`
+```plaintext
+cargo tarpaulin --out Html
+```
 
-This module combines all the individual query modules into a single root query for the GraphQL schema.
+The coverage report will be located at `tarpaulin-report.html`.
 
-- **RootQuery struct**: Combines queries from various domains like CPUs, prebuilts, services, and software.
-  - **api_version(&self) -> &str**: Returns the API version.
-  - **popular_prebuilts(&self, context: &Context) -> Vec<Prebuilt>**: Returns a list of popular prebuilts.
-  - **services(&self, context: &Context) -> Vec<Service>**: Returns a list of services.
-  - **software_solutions(&self, context: &Context) -> Vec<Software>**: Returns a list of software solutions.
-  - **cpus(&self, context: &Context) -> Vec<CpuGraphql>**: Returns a list of CPUs.
+## Continuous Integration and Deployment
 
-## Diesel Schemas and Models
+The project uses GitHub Actions for CI/CD. Workflows are defined in the `.github/workflows` directory.
 
-### `diesel_schema/parts/cpu.rs`
+### Workflows
 
-This file defines the schema for the `cpu` table using Diesel's `table!` macro. It maps the columns in the `cpu` table to their corresponding data types.
+- **Build and Test:** Automatically builds the project and runs tests on each push.
+- **Deploy Documentation:** Deploys generated documentation to GitHub Pages when changes are pushed to the `deploy-pages` branch.
+- **Code Coverage:** Generates test coverage reports using `cargo tarpaulin`.
 
-- **Schema Definition**:
-  - `id -> Int4`: The primary key of the `cpu` table, represented as a 32-bit integer.
-  - `name -> Varchar`: The name of the CPU, stored as a variable-length character string with a maximum length of 255 characters.
-  - `price -> Numeric`: The price of the CPU, stored as a numeric value.
-  - `core_count -> Int4`: The number of cores in the CPU, represented as a 32-bit integer.
-  - `core_clock -> Varchar`: The base clock speed of the CPU, stored as a string with a maximum length of 50 characters.
-  - `boost_clock -> Varchar`: The boost clock speed of the CPU, stored as a string with a maximum length of 50 characters.
-  - `tdp -> Int4`: The thermal design power (TDP) of the CPU, represented as a 32-bit integer.
-  - `integrated_graphics -> Nullable<Varchar>`: The integrated graphics of the CPU, stored as an optional string with a maximum length of 100 characters.
-  - `smt -> Bool`: A boolean indicating whether simultaneous multithreading (SMT) is supported.
+### GitHub Pages Deployment
 
-### `models/parts/cpu.rs`
+Documentation is automatically deployed to GitHub Pages on push to deploy-pages.
 
-This file defines the Rust struct that corresponds to the `cpu` table in the database. The struct is used by Diesel to map database records to Rust objects and vice versa.
+## Contributing
 
-- **CPU Struct**:
-  - **Fields**:
-    - `id: i32`: The primary key of the CPU record.
-    - `name: String`: The name of the CPU.
-    - `price: BigDecimal`: The price of the CPU, represented as a `BigDecimal` for precise numeric operations.
-    - `core_count: i32`: The number of cores in the CPU.
-    - `core_clock: String`: The base clock speed of the CPU.
-    - `boost_clock: String`: The boost clock speed of the CPU.
-    - `tdp: i32`: The thermal design power (TDP) of the CPU.
-    - `integrated_graphics: Option<String>`: The integrated graphics of the CPU, represented as an optional string.
-    - `smt: bool`: A boolean indicating whether simultaneous multithreading (SMT) is supported.
+Contributions are welcome! Please follow these steps:
 
-- **Attributes**:
-  - `#[derive(Queryable, Insertable)]`: Indicates that the `CPU` struct can be used for querying and inserting data in the `cpu` table.
-  - `#[diesel(table_name = cpu)]`: Associates the `CPU` struct with the `cpu` table in the database.
+1. Fork the repository.
+2. Create a new feature branch (`git checkout -b feature/my-feature`).
+3. Commit your changes (`git commit -am 'Add new feature'`).
+4. Push to the branch (`git push origin feature/my-feature`).
+5. Open a Pull Request.
+
+### Guidelines
+
+- Write clear, concise commit messages.
+- Ensure all tests pass before submitting a PR.
+- Update documentation and add tests for new features.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Contact
