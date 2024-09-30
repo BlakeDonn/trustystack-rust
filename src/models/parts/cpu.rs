@@ -1,7 +1,7 @@
 use crate::diesel_schema::parts::cpu::cpu;
 use bigdecimal::BigDecimal;
-use diesel::Selectable;
 use diesel::prelude::*;
+use diesel::Selectable;
 
 #[derive(Queryable, Insertable, Selectable)]
 #[diesel(table_name = cpu)]

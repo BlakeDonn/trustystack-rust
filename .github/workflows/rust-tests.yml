@@ -9,7 +9,7 @@ on:
       ref:
         description: 'Git ref to checkout'
         required: false
-        type: string  # Added type property
+        type: string
     secrets:
       PAT_TOKEN:
         description: 'Personal Access Token with repo access'
@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read  # Necessary for actions/checkout
+      contents: read
 
     services:
       postgres:
@@ -116,4 +116,3 @@ jobs:
       - name: Run Rust tests
         working-directory: ${{ steps.workdir.outputs.workdir }}
         run: cargo test -- --test-threads=1
-
