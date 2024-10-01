@@ -6,5 +6,15 @@ file = "src/diesel_schema/parts/cpu.rs"
 custom_type_derives = ["diesel::query_builder::QueryId", "Clone"]
 filter = { only_tables = ["cpu"] }
 
+[print_schema.parts]
+file = "src/diesel_schema/parts/gpu.rs"
+custom_type_derives = ["diesel::query_builder::QueryId", "Clone"]
+filter = { only_tables = ["gpu"] }
+
+[print_schema.parts]
+file = "src/diesel_schema/parts/memory.rs"
+custom_type_derives = ["diesel::query_builder::QueryId", "Clone"]
+filter = { only_tables = ["memory"] }
+
 [migrations_directory]
 dir = "migrations"
