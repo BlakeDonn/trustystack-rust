@@ -2,13 +2,8 @@ name: Deploy Documentation
 
 on:
   push:
-<<<<<<< Updated upstream
-    tags:
-      - 'v*.*.*'
-=======
     branches:
       - deploy-pages
->>>>>>> Stashed changes
 
 permissions:
   contents: read
