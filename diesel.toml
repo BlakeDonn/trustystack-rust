@@ -1,10 +1,17 @@
-# For documentation on how to configure this file,
-# see https://diesel.rs/guides/configuring-diesel-cli
+# diesel.toml
 
 [print_schema.parts]
-file = "src/diesel_schema/parts/cpu.rs"
-custom_type_derives = ["diesel::query_builder::QueryId", "Clone"]
-filter = { only_tables = ["cpu"] }
+file = "src/diesel_schema/parts.rs"
+filter = { only_tables = ["parts", "manufacturers", "categories", "cpu_specs", "gpu_specs", "memory_specs", "storage_specs"] }
+
+[print_schema.configurations]
+file = "src/diesel_schema/configurations.rs"
+filter = { only_tables = ["configurations", "configuration_parts"] }
+
+[print_schema.users]
+file = "src/diesel_schema/users.rs"
+filter = { only_tables = ["users"] }
 
 [migrations_directory]
 dir = "migrations"
+

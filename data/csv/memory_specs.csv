@@ -1,0 +1,4 @@
+part_id,capacity,speed,memory_type,ecc,buffered,cas_latency,form_factor,rgb_lighting,kit_configuration,voltage,heat_spreader
+16,64,6000,DDR5,false,false,36,UDIMM,false,"2x32GB",1.35,true
+17,32,7200,DDR5,false,false,36,UDIMM,true,"2x16GB",1.45,true
+

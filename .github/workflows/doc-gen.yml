@@ -1,8 +1,14 @@
 name: Deploy Documentation
 
 on:
-  tags:
+  push:
+<<<<<<< Updated upstream
+    tags:
       - 'v*.*.*'
+=======
+    branches:
+      - deploy-pages
+>>>>>>> Stashed changes
 
 permissions:
   contents: read
@@ -63,7 +69,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     runs-on: ubuntu-latest
-    needs: build 
+    needs: build
 
     steps:
       # Deploy the uploaded artifact to GitHub Pages

@@ -1,0 +1,4 @@
+part_id,capacity,interface,form_factor,sequential_read_speed,sequential_write_speed,nand_type,controller,endurance,encryption_support
+18,1000,"PCIe 4.0 x4 NVMe","M.2 2280",3500,2800,"3D TLC","Phison E19T",300,false
+19,2000,"PCIe 4.0 x4 NVMe","M.2 2280",7300,7000,"3D TLC","Phison E18",2000,false
+

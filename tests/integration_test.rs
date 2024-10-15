@@ -1,8 +1,9 @@
+// tests/integration_tests.rs
+
+#[macro_use]
 mod utils;
 
 use actix_web::test;
-use diesel::r2d2::{ConnectionManager, Pool};
-use diesel::PgConnection;
 use dotenv::dotenv;
 use std::env;
 
@@ -12,9 +13,9 @@ async fn test_database_connection() {
 
     let database_url = env::var("TEST_DATABASE_URL").expect("TEST_DATABASE_URL must be set");
 
-    println!("Database url: {:?}", database_url);
-    let manager = ConnectionManager::<PgConnection>::new(database_url);
-    let pool = Pool::builder()
+    println!("Database URL: {:?}", database_url);
+    let manager = diesel::r2d2::ConnectionManager::<diesel::PgConnection>::new(database_url);
+    let pool = diesel::r2d2::Pool::builder()
         .build(manager)
         .expect("Failed to create pool.");
 
