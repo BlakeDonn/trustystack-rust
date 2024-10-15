@@ -1,5 +1,5 @@
 use crate::graphql_schema::context::Context;
-use crate::graphql_schema::parts::cpu::query::{CpuGraphql, CpuQuery};
+//use crate::graphql_schema::parts::cpu::query::{CpuGraphql, CpuQuery};
 use crate::graphql_schema::prebuilt::query::{Prebuilt, PrebuiltQuery};
 use crate::graphql_schema::service::query::{Service, ServiceQuery};
 use crate::graphql_schema::software::query::{Software, SoftwareQuery};
@@ -32,11 +32,5 @@ impl RootQuery {
     fn software_solutions(&self) -> FieldResult<Vec<Software>> {
         log::info!("softwareSolutions query resolved.");
         Ok(SoftwareQuery::get_softwares())
-    }
-
-    /// Fetches CPUs from the database and returns them as a vector of `CpuGraphql` objects.
-    fn cpus(&self, context: &Context) -> FieldResult<Vec<CpuGraphql>> {
-        log::info!("cpus query resolved.");
-        CpuQuery::get_cpus(context)
     }
 }

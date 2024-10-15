@@ -1,7 +1,8 @@
 name: Trigger Infra Deployment
 
 on:
-  tags:
+  push:
+    tags:
       - 'v*.*.*'
 
 jobs:

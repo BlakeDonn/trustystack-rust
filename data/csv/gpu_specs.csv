@@ -1,0 +1,7 @@
+part_id,cuda_cores,vram_size,vram_type,tdp,memory_bandwidth,interface,form_factor,outputs,length
+11,18176,48,GDDR6 ECC,300,960,"PCIe 4.0 x16","Dual-slot","{""4x DisplayPort 1.4a""}",NULL
+12,6144,20,GDDR6 ECC,70,320,"PCIe 4.0 x16","Single-slot, low-profile","{""4x Mini DisplayPort 1.4a""}",NULL
+13,16384,24,GDDR6X,450,1008,"PCIe 4.0 x16","Triple-slot","{""1x HDMI 2.1a"",""3x DisplayPort 1.4a""}",NULL
+14,7680,12,GDDR6X,285,504,"PCIe 4.0 x16","Dual-slot","{""1x HDMI 2.1a"",""3x DisplayPort 1.4a""}",NULL
+15,,48,GDDR6 ECC,295,864,"PCIe 4.0 x16","Dual-slot","{""3x DisplayPort 2.1"",""1x Mini DisplayPort 2.1""}",NULL
+
