@@ -5,9 +5,10 @@ WORKDIR /app
 # Copy the Cargo manifests
 COPY Cargo.toml Cargo.lock ./
 
-# Copy the source code and migrations
+# Copy the source code, migrations, and data
 COPY src/ ./src
 COPY migrations/ ./migrations
+COPY data/ ./data 
 
 # Build the application and migrations binaries
 RUN cargo build --release --bin rust-backend --bin migrate
@@ -38,5 +39,9 @@ COPY --from=builder /app/entrypoint.sh ./
 # Copy the migrations directory
 COPY --from=builder /app/migrations ./migrations
 
+# Copy the data directory 
+COPY --from=builder /app/data ./data
+
 # Set the entrypoint
 ENTRYPOINT ["./entrypoint.sh"]
+
