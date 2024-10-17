@@ -2,6 +2,7 @@ use actix_web::{guard, web, App, HttpServer};
 use diesel::r2d2::{ConnectionManager, Pool};
 use diesel::PgConnection;
 use dotenv::dotenv;
+use env_logger::Env;
 use log::{error, info};
 use rust_backend::graphql_schema::context::Context;
 use rust_backend::{graphql_handler, graphql_schema};
@@ -14,7 +15,7 @@ use std::sync::Arc;
 async fn main() -> std::io::Result<()> {
     println!("Starting the Rust backend server...");
 
-    env_logger::init();
+    env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
     info!("Logger initialized");
 
     dotenv().ok();
