@@ -125,8 +125,8 @@ fn import_gpu_specs(conn: &mut PgConnection) -> Result<(), DataImportError> {
 
         // Deserialize outputs from JSON array string
         if let Some(outputs_str) = record.outputs.as_ref() {
-            let outputs_vec: Vec<String> = outputs_str.to_vec();
-            record.outputs = Some(outputs_vec);
+            let outputs_vec: Option<Vec<Option<String>>> = Some(outputs_str.to_vec());
+            record.outputs = outputs_vec;
         }
 
         insert_into(gpu_specs)

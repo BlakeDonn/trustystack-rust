@@ -5,7 +5,7 @@ use bigdecimal::BigDecimal;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Queryable, Insertable, Serialize, Deserialize, Debug)]
+#[derive(Selectable, Queryable, Insertable, Serialize, Deserialize, Debug)]
 #[diesel(table_name = memory_specs)]
 pub struct MemorySpec {
     pub part_id: i32,

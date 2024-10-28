@@ -1,15 +1,17 @@
+// src/models/parts/part.rs
+
 use crate::diesel_schema::parts::parts;
 use bigdecimal::BigDecimal;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use serde_json::Value as JsonValue;
 
-#[derive(Queryable, Insertable, Serialize, Deserialize, Debug)]
+#[derive(Selectable, Queryable, Insertable, Serialize, Deserialize, Debug)]
 #[diesel(table_name = parts)]
 pub struct Part {
     pub id: i32,
-    pub manufacturer_id: i32,
-    pub category_id: i32,
+    pub manufacturer_id: Option<i32>,
+    pub category_id: Option<i32>,
     pub name: String,
     pub model: String,
     pub price: Option<BigDecimal>,
@@ -17,6 +19,7 @@ pub struct Part {
     pub common_specifications: Option<JsonValue>,
 }
 
+// Deserialize function for common_specifications
 use serde::de::{self, Deserializer};
 
 pub fn deserialize_optional_json<'de, D>(deserializer: D) -> Result<Option<JsonValue>, D::Error>
