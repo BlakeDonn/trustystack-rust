@@ -5,7 +5,7 @@ use bigdecimal::BigDecimal;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Queryable, Insertable, Serialize, Deserialize, Debug)]
+#[derive(Selectable, Queryable, Insertable, Serialize, Deserialize, Debug)]
 #[diesel(table_name = gpu_specs)]
 pub struct GpuSpec {
     pub part_id: i32,
@@ -16,6 +16,6 @@ pub struct GpuSpec {
     pub memory_bandwidth: Option<BigDecimal>,
     pub interface: Option<String>,
     pub form_factor: Option<String>,
-    pub outputs: Option<Vec<String>>,
+    pub outputs: Option<Vec<Option<String>>>,
     pub length: Option<i32>,
 }

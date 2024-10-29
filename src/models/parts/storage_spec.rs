@@ -4,7 +4,7 @@ use crate::diesel_schema::parts::storage_specs;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Queryable, Insertable, Serialize, Deserialize, Debug)]
+#[derive(Selectable, Queryable, Insertable, Serialize, Deserialize, Debug)]
 #[diesel(table_name = storage_specs)]
 pub struct StorageSpec {
     pub part_id: i32,

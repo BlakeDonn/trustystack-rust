@@ -7,8 +7,8 @@ macro_rules! setup_test_app {
         use diesel::r2d2::{ConnectionManager, Pool};
         use diesel::PgConnection;
         use dotenv::dotenv;
-        use rust_backend::graphql_handler;
-        use rust_backend::graphql_schema::{context::Context, create_schema};
+        use rust_backend::graphql_handler::graphql_handler;
+        use rust_backend::graphql_schema::{context::Context, schema::create_schema};
         use std::env;
         use std::sync::Arc;
 
