@@ -88,10 +88,9 @@ jobs:
           override: true
           profile: minimal
 
-      # Build the project (including the migrate binary)
       - name: Build Project
         working-directory: ${{ steps.workdir.outputs.workdir }}
-        run: cargo build --release --bin migrate --bin rust-backend
+        run: cargo test --release --no-run
 
       # Ensure migrate binary is executable (optional)
       - name: Make Migrate Binary Executable
@@ -112,7 +111,7 @@ jobs:
         working-directory: ${{ steps.workdir.outputs.workdir }}
         run: ./target/release/migrate
 
-      # Run Rust tests
       - name: Run Rust tests
         working-directory: ${{ steps.workdir.outputs.workdir }}
-        run: cargo test -- --test-threads=1
+        run: cargo test --release -- --test-threads=1
+
