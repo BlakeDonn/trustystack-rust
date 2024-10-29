@@ -19,7 +19,7 @@ macro_rules! setup_test_app {
         let pool = Pool::builder()
             .build(manager)
             .expect("Failed to create pool.");
-        let context = web::Data::new(Context::new(pool));
+        let context = web::Data::new(Context::new(pool, None));
 
         // Create GraphQL schema
         let schema = Arc::new(create_schema());

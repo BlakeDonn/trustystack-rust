@@ -285,3 +285,11 @@ impl RootQuery {
         result
     }
 }
+
+// Define the Schema
+pub type SchemaType = RootNode<'static, RootQuery, EmptyMutation, EmptySubscription>;
+
+/// Creates the GraphQL schema.
+pub fn create_schema() -> SchemaType {
+    SchemaType::new(RootQuery, EmptyMutation::new(), EmptySubscription::new())
+}
