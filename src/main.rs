@@ -7,14 +7,15 @@ use diesel::PgConnection;
 use dotenv::dotenv;
 use env_logger::Env;
 use log::{error, info};
-use rust_backend::graphql_handler::graphql_handler;
+use rust_backend::graphql_handler::{graphql_handler, login_handler}; // Import login_handler
 use rust_backend::graphql_schema::context::Context;
 use rust_backend::graphql_schema::schema::create_schema;
+use rust_backend::middleware::auth::AuthMiddleware;
+use rust_backend::middleware::logging::GraphQLLogging;
+use rust_backend::middleware::timing::Timing;
 use std::env;
 use std::sync::Arc;
 
-/// Entry point of the Rust backend server, responsible for initializing the environment,
-/// setting up the database connection, and starting the HTTP server.
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     println!("Starting the Rust backend server...");
@@ -46,12 +47,10 @@ async fn main() -> std::io::Result<()> {
     let pool = match Pool::builder().build(manager) {
         Ok(pool) => {
             info!("Database connection pool created successfully.");
-            println!("Database connection pool created successfully.");
             pool
         }
         Err(e) => {
             error!("Failed to create pool: {}", e);
-            println!("Error: Failed to create pool: {}", e);
             std::process::exit(1);
         }
     };
@@ -62,7 +61,7 @@ async fn main() -> std::io::Result<()> {
     info!("GraphQL schema created.");
 
     // Initialize GraphQL context with the database pool
-    let context = web::Data::new(Context::new(pool));
+    let context = web::Data::new(Context::new(pool, None)); // User will be set by middleware
 
     // Clone schema for use in server closure
     let schema_clone = schema.clone();
@@ -77,6 +76,9 @@ async fn main() -> std::io::Result<()> {
             .supports_credentials();
 
         App::new()
+            .wrap(AuthMiddleware) // Add Auth middleware first
+            .wrap(Timing)
+            .wrap(GraphQLLogging) // Logs GraphQL query and variables
             .wrap(cors)
             // Share the GraphQL schema with handlers
             .app_data(web::Data::new(schema_clone.clone()))
@@ -94,18 +96,22 @@ async fn main() -> std::io::Result<()> {
                     .guard(guard::Get())
                     .to(playground_handler),
             )
+            // Login endpoint
+            .service(
+                web::resource("/login")
+                    .guard(guard::Post())
+                    .to(login_handler),
+            )
     })
     .bind("0.0.0.0:8080");
 
     match server {
         Ok(server) => {
             info!("Server started successfully at http://0.0.0.0:8080");
-            println!("Server started successfully at http://0.0.0.0:8080");
             server.run().await
         }
         Err(e) => {
             error!("Failed to start server: {}", e);
-            println!("Error: Failed to start server: {}", e);
             std::process::exit(1);
         }
     }

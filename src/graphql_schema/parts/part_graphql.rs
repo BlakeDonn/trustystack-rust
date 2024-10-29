@@ -1,3 +1,5 @@
+// src/graphql_schema/parts/part_graphql.rs
+
 use crate::graphql_schema::context::Context;
 use crate::graphql_schema::parts::category_graphql::CategoryGraphQL;
 use crate::graphql_schema::parts::cpu_spec_graphql::CpuSpecGraphQL;
@@ -7,6 +9,7 @@ use crate::graphql_schema::parts::memory_spec_graphql::MemorySpecGraphQL;
 use crate::graphql_schema::parts::storage_spec_graphql::StorageSpecGraphQL;
 use crate::models::parts::part::Part;
 use juniper::{graphql_object, FieldResult};
+use log::{error, info};
 
 /// `PartGraphQL` struct representing a PC Part in the GraphQL schema.
 pub struct PartGraphQL {
@@ -52,59 +55,119 @@ impl PartGraphQL {
         self.price.as_deref()
     }
 
-    fn common_specifications(&self) -> Option<&str> {
+    fn commonSpecifications(&self) -> Option<&str> {
         self.common_specifications.as_deref()
     }
 
     fn manufacturer(&self, context: &Context) -> FieldResult<Option<ManufacturerGraphQL>> {
+        info!("Resolving manufacturer for part ID: {}", self.id);
         match self.manufacturer_id {
             Some(id) => {
                 let manufacturer = context.get_manufacturer_by_id(id)?;
+                info!("Manufacturer resolved: {:?}", manufacturer);
                 Ok(Some(ManufacturerGraphQL::from_manufacturer(manufacturer)))
             }
-            None => Ok(None),
+            None => {
+                info!("No manufacturer associated with part ID: {}", self.id);
+                Ok(None)
+            }
         }
     }
 
     fn category(&self, context: &Context) -> FieldResult<Option<CategoryGraphQL>> {
+        info!("Resolving category for part ID: {}", self.id);
         match self.category_id {
             Some(id) => {
                 let category = context.get_category_by_id(id)?;
+                info!("Category resolved: {:?}", category);
                 Ok(Some(CategoryGraphQL::from_category(category)))
             }
-            None => Ok(None),
+            None => {
+                info!("No category associated with part ID: {}", self.id);
+                Ok(None)
+            }
         }
     }
 
     /// Resolves the GPU specifications associated with the part.
-    fn gpu_spec(&self, context: &Context) -> FieldResult<Option<GpuSpecGraphQL>> {
+    fn gpuSpec(&self, context: &Context) -> FieldResult<Option<GpuSpecGraphQL>> {
+        info!("Resolving GPU spec for part ID: {}", self.id);
         match context.get_gpu_spec_by_part_id(self.id) {
-            Ok(spec) => Ok(spec.map(GpuSpecGraphQL::from_gpu_spec)),
-            Err(e) => Err(e), // Propagate other errors
+            Ok(spec) => {
+                if let Some(ref gpu_spec) = spec {
+                    info!("GPU spec found: {:?}", gpu_spec);
+                } else {
+                    info!("No GPU spec found for part ID: {}", self.id);
+                }
+                Ok(spec.map(GpuSpecGraphQL::from_gpu_spec))
+            }
+            Err(e) => {
+                error!("Error resolving GPU spec for part ID {}: {:#?}", self.id, e);
+                Err(e)
+            }
         }
     }
 
     /// Resolves the Memory specifications associated with the part.
-    fn memory_spec(&self, context: &Context) -> FieldResult<Option<MemorySpecGraphQL>> {
+    fn memorySpec(&self, context: &Context) -> FieldResult<Option<MemorySpecGraphQL>> {
+        info!("Resolving Memory spec for part ID: {}", self.id);
         match context.get_memory_spec_by_part_id(self.id) {
-            Ok(spec) => Ok(spec.map(MemorySpecGraphQL::from_memory_spec)),
-            Err(e) => Err(e),
+            Ok(spec) => {
+                if let Some(ref memory_spec) = spec {
+                    info!("Memory spec found: {:?}", memory_spec);
+                } else {
+                    info!("No Memory spec found for part ID: {}", self.id);
+                }
+                Ok(spec.map(MemorySpecGraphQL::from_memory_spec))
+            }
+            Err(e) => {
+                error!(
+                    "Error resolving Memory spec for part ID {}: {:#?}",
+                    self.id, e
+                );
+                Err(e)
+            }
         }
     }
 
     /// Resolves the Storage specifications associated with the part.
-    fn storage_spec(&self, context: &Context) -> FieldResult<Option<StorageSpecGraphQL>> {
+    fn storageSpec(&self, context: &Context) -> FieldResult<Option<StorageSpecGraphQL>> {
+        info!("Resolving Storage spec for part ID: {}", self.id);
         match context.get_storage_spec_by_part_id(self.id) {
-            Ok(spec) => Ok(spec.map(StorageSpecGraphQL::from_storage_spec)),
-            Err(e) => Err(e),
+            Ok(spec) => {
+                if let Some(ref storage_spec) = spec {
+                    info!("Storage spec found: {:?}", storage_spec);
+                } else {
+                    info!("No Storage spec found for part ID: {}", self.id);
+                }
+                Ok(spec.map(StorageSpecGraphQL::from_storage_spec))
+            }
+            Err(e) => {
+                error!(
+                    "Error resolving Storage spec for part ID {}: {:#?}",
+                    self.id, e
+                );
+                Err(e)
+            }
         }
     }
 
     /// Resolves the CPU specifications associated with the part.
-    fn cpu_spec(&self, context: &Context) -> FieldResult<Option<CpuSpecGraphQL>> {
+    fn cpuSpec(&self, context: &Context) -> FieldResult<Option<CpuSpecGraphQL>> {
+        info!("Resolving CPU spec for part ID: {}", self.id);
         match context.get_cpu_spec_by_part_id(self.id) {
-            Ok(spec) => Ok(spec.map(CpuSpecGraphQL::from_cpu_spec)),
-            Err(e) => Err(e),
+            Ok(spec) => {
+                if let Some(ref cpu_spec) = spec {
+                    info!("CPU spec found: {:?}", cpu_spec);
+                } else {
+                    info!("No CPU spec found for part ID: {}", self.id);
+                }
+                Ok(spec.map(CpuSpecGraphQL::from_cpu_spec))
+            }
+            Err(e) => {
+                error!("Error resolving CPU spec for part ID {}: {:#?}", self.id, e);
+                Err(e)
+            }
         }
     }
 }

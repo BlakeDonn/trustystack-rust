@@ -1,3 +1,5 @@
+// src/graphql_schema/parts/cpu_spec_graphql.rs
+
 use crate::models::parts::cpu_spec::CpuSpec;
 use juniper::GraphQLObject;
 
