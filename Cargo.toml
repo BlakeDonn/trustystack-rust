@@ -4,6 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+bcrypt = "0.14.0"
+jsonwebtoken = "8.2"
 actix-web = "4"
 juniper = { version = "0.15", features = ["chrono"] }
 juniper_actix = "0.5"
@@ -19,6 +21,8 @@ env_logger = "0.9"
 log = "0.4"
 thiserror = "1.0"
 actix-cors = "0.7.0"
+futures = "0.3.31"
+chrono = "0.4.38"
 
 [dev-dependencies]
 actix-rt = "2"

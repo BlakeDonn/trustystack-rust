@@ -1,10 +1,11 @@
-// src/graphql_schema/parts/manufacturer.rs
+// src/graphql_schema/parts/manufacturer_graphql.rs
 
-use crate::graphql_schema::context::Context;
 use crate::models::parts::manufacturer::Manufacturer;
-use juniper::graphql_object;
+use juniper::GraphQLObject;
 
-/// `ManufacturerGraphQL` struct representing a manufacturer in the GraphQL schema.
+/// `ManufacturerGraphQL` struct representing Manufacturers in the GraphQL schema.
+#[derive(GraphQLObject)]
+#[graphql(description = "Manufacturer of Parts")]
 pub struct ManufacturerGraphQL {
     pub id: i32,
     pub name: String,
@@ -19,23 +20,5 @@ impl ManufacturerGraphQL {
             name: manufacturer.name,
             website: manufacturer.website,
         }
-    }
-}
-
-#[graphql_object(context = Context)]
-impl ManufacturerGraphQL {
-    /// Returns the ID of the manufacturer.
-    fn id(&self) -> i32 {
-        self.id
-    }
-
-    /// Returns the name of the manufacturer.
-    fn name(&self) -> &str {
-        &self.name
-    }
-
-    /// Returns the website of the manufacturer.
-    fn website(&self) -> Option<&str> {
-        self.website.as_deref()
     }
 }

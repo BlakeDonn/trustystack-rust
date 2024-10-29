@@ -1,10 +1,11 @@
-// src/graphql_schema/parts/category.rs
+// src/graphql_schema/parts/category_graphql.rs
 
-use crate::graphql_schema::context::Context;
 use crate::models::parts::category::Category;
-use juniper::graphql_object;
+use juniper::GraphQLObject;
 
-/// `CategoryGraphQL` struct representing a category in the GraphQL schema.
+/// `CategoryGraphQL` struct representing Categories in the GraphQL schema.
+#[derive(GraphQLObject)]
+#[graphql(description = "Category of Parts")]
 pub struct CategoryGraphQL {
     pub id: i32,
     pub name: String,
@@ -19,23 +20,5 @@ impl CategoryGraphQL {
             name: category.name,
             description: category.description,
         }
-    }
-}
-
-#[graphql_object(context = Context)]
-impl CategoryGraphQL {
-    /// Returns the ID of the category.
-    fn id(&self) -> i32 {
-        self.id
-    }
-
-    /// Returns the name of the category.
-    fn name(&self) -> &str {
-        &self.name
-    }
-
-    /// Returns the description of the category.
-    fn description(&self) -> &str {
-        &self.name
     }
 }
