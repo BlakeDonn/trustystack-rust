@@ -3,13 +3,12 @@
 diesel::table! {
     accounts (id) {
         id -> Int4,
+        #[sql_name = "userId"]
         user_id -> Int4,
         #[sql_name = "type"]
-        #[max_length = 255]
         type_ -> Varchar,
-        #[max_length = 255]
         provider -> Varchar,
-        #[max_length = 255]
+        #[sql_name = "providerAccountId"]
         provider_account_id -> Varchar,
         refresh_token -> Nullable<Text>,
         access_token -> Nullable<Text>,
@@ -24,9 +23,10 @@ diesel::table! {
 diesel::table! {
     sessions (id) {
         id -> Int4,
+        #[sql_name = "userId"]
         user_id -> Int4,
         expires -> Timestamptz,
-        #[max_length = 255]
+        #[sql_name = "sessionToken"]
         session_token -> Varchar,
     }
 }
@@ -34,24 +34,23 @@ diesel::table! {
 diesel::table! {
     users (id) {
         id -> Int4,
-        #[max_length = 255]
         name -> Nullable<Varchar>,
-        #[max_length = 255]
         email -> Nullable<Varchar>,
+        #[sql_name = "emailVerified"]
         email_verified -> Nullable<Timestamptz>,
         image -> Nullable<Text>,
     }
 }
 
 diesel::table! {
-    verification_tokens (identifier, token) {
+    verification_token (identifier, token) {
         identifier -> Text,
-        token -> Text,
         expires -> Timestamptz,
+        token -> Text,
     }
 }
 
 diesel::joinable!(accounts -> users (user_id));
 diesel::joinable!(sessions -> users (user_id));
 
-diesel::allow_tables_to_appear_in_same_query!(accounts, sessions, users, verification_tokens,);
+diesel::allow_tables_to_appear_in_same_query!(accounts, sessions, users, verification_token,);

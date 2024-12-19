@@ -1,9 +1,10 @@
+use crate::diesel_schema::users::{accounts, sessions, users, verification_token};
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Queryable, Insertable, Serialize, Deserialize)]
-#[diesel(table_name = crate::diesel_schema::users::users)]
+#[derive(Debug, Serialize, Deserialize, Queryable, Selectable)]
+#[diesel(table_name = users)]
 pub struct User {
     pub id: i32,
     pub name: Option<String>,
@@ -12,22 +13,27 @@ pub struct User {
     pub image: Option<String>,
 }
 
-#[derive(Debug, Queryable, Insertable)]
-#[diesel(table_name = crate::diesel_schema::users::sessions)]
+#[derive(Debug, Serialize, Deserialize, Queryable, Selectable)]
+#[diesel(table_name = sessions)]
 pub struct Session {
     pub id: i32,
+    #[diesel(column_name = user_id)]
     pub user_id: i32,
     pub expires: DateTime<Utc>,
+    #[diesel(column_name = session_token)]
     pub session_token: String,
 }
 
-#[derive(Debug, Queryable, Insertable)]
-#[diesel(table_name = crate::diesel_schema::users::accounts)]
+#[derive(Debug, Serialize, Deserialize, Queryable, Selectable)]
+#[diesel(table_name = accounts)]
 pub struct Account {
     pub id: i32,
+    #[diesel(column_name = user_id)]
     pub user_id: i32,
+    #[diesel(column_name = type_)]
     pub type_: String,
     pub provider: String,
+    #[diesel(column_name = provider_account_id)]
     pub provider_account_id: String,
     pub refresh_token: Option<String>,
     pub access_token: Option<String>,
@@ -38,10 +44,11 @@ pub struct Account {
     pub token_type: Option<String>,
 }
 
-#[derive(Debug, Queryable, Insertable)]
-#[diesel(table_name = crate::diesel_schema::users::verification_tokens)]
+#[derive(Debug, Serialize, Deserialize, Queryable, Selectable)]
+#[diesel(table_name = verification_token)]
+#[diesel(primary_key(identifier, token))]
 pub struct VerificationToken {
     pub identifier: String,
-    pub token: String,
     pub expires: DateTime<Utc>,
+    pub token: String,
 }

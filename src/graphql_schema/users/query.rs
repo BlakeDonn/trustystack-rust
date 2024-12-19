@@ -1,5 +1,6 @@
 use crate::graphql_schema::context::Context;
 use crate::graphql_schema::users::types::UserType;
+use crate::models::auth::User;
 use diesel::prelude::*;
 use juniper::{FieldError, FieldResult};
 
@@ -13,7 +14,8 @@ impl UserQuery {
         let conn = &mut context.get_connection()?;
         let user = users
             .find(user_id)
-            .first::<crate::models::auth::User>(conn)
+            .select(User::as_select())
+            .first(conn)
             .map_err(|e| FieldError::from(e))?;
 
         Ok(UserType::from(user))
@@ -24,7 +26,8 @@ impl UserQuery {
 
         let conn = &mut context.get_connection()?;
         let user_list = users
-            .load::<crate::models::auth::User>(conn)
+            .select(User::as_select())
+            .load(conn)
             .map_err(|e| FieldError::from(e))?;
 
         Ok(user_list.into_iter().map(UserType::from).collect())
