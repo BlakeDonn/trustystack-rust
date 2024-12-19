@@ -28,26 +28,6 @@ impl RootQuery {
         limit: Option<i32>,
         offset: Option<i32>,
     ) -> juniper::FieldResult<Vec<PartGraphQL>> {
-        // Authorization Check
-        if let Some(user) = &context.user {
-            if user.role != "admin" && user.role != "user" {
-                error!(
-                    "Unauthorized access attempt to 'parts' query by user: {}",
-                    user.username
-                );
-                return Err(juniper::FieldError::new(
-                    "Unauthorized",
-                    juniper::Value::scalar("You do not have permission to access this resource."),
-                ));
-            }
-        } else {
-            error!("Unauthorized access attempt to 'parts' query with no user.");
-            return Err(juniper::FieldError::new(
-                "Unauthorized",
-                juniper::Value::scalar("You must be logged in to access this resource."),
-            ));
-        }
-
         let start_time = Instant::now();
         info!(
             "Executing 'parts' query with limit: {:?}, offset: {:?}",
@@ -68,26 +48,6 @@ impl RootQuery {
 
     /// Fetches a specific part by ID.
     fn part(context: &Context, part_id: i32) -> juniper::FieldResult<Option<PartGraphQL>> {
-        // Authorization Check
-        if let Some(user) = &context.user {
-            if user.role != "admin" && user.role != "user" {
-                error!(
-                    "Unauthorized access attempt to 'part' query by user: {}",
-                    user.username
-                );
-                return Err(juniper::FieldError::new(
-                    "Unauthorized",
-                    juniper::Value::scalar("You do not have permission to access this resource."),
-                ));
-            }
-        } else {
-            error!("Unauthorized access attempt to 'part' query with no user.");
-            return Err(juniper::FieldError::new(
-                "Unauthorized",
-                juniper::Value::scalar("You must be logged in to access this resource."),
-            ));
-        }
-
         let start_time = Instant::now();
         info!("Executing 'part' query with part_id: {}", part_id);
         let result = get_part_by_id(context, part_id);
@@ -109,26 +69,6 @@ impl RootQuery {
 
     /// Fetches all manufacturers.
     fn manufacturers(context: &Context) -> juniper::FieldResult<Vec<ManufacturerGraphQL>> {
-        // Authorization Check
-        if let Some(user) = &context.user {
-            if user.role != "admin" {
-                error!(
-                    "Unauthorized access attempt to 'manufacturers' query by user: {}",
-                    user.username
-                );
-                return Err(juniper::FieldError::new(
-                    "Unauthorized",
-                    juniper::Value::scalar("You do not have permission to access this resource."),
-                ));
-            }
-        } else {
-            error!("Unauthorized access attempt to 'manufacturers' query with no user.");
-            return Err(juniper::FieldError::new(
-                "Unauthorized",
-                juniper::Value::scalar("You must be logged in to access this resource."),
-            ));
-        }
-
         let start_time = Instant::now();
         info!("Executing 'manufacturers' query");
         let result = ManufacturersQueries::get_all_manufacturers(context);
@@ -153,26 +93,6 @@ impl RootQuery {
         context: &Context,
         manufacturer_id: i32,
     ) -> juniper::FieldResult<Option<ManufacturerGraphQL>> {
-        // Authorization Check
-        if let Some(user) = &context.user {
-            if user.role != "admin" {
-                error!(
-                    "Unauthorized access attempt to 'manufacturer' query by user: {}",
-                    user.username
-                );
-                return Err(juniper::FieldError::new(
-                    "Unauthorized",
-                    juniper::Value::scalar("You do not have permission to access this resource."),
-                ));
-            }
-        } else {
-            error!("Unauthorized access attempt to 'manufacturer' query with no user.");
-            return Err(juniper::FieldError::new(
-                "Unauthorized",
-                juniper::Value::scalar("You must be logged in to access this resource."),
-            ));
-        }
-
         let start_time = Instant::now();
         info!(
             "Executing 'manufacturer' query with manufacturer_id: {}",
@@ -200,26 +120,6 @@ impl RootQuery {
 
     /// Fetches all categories.
     fn categories(context: &Context) -> juniper::FieldResult<Vec<CategoryGraphQL>> {
-        // Authorization Check
-        if let Some(user) = &context.user {
-            if user.role != "admin" && user.role != "user" {
-                error!(
-                    "Unauthorized access attempt to 'categories' query by user: {}",
-                    user.username
-                );
-                return Err(juniper::FieldError::new(
-                    "Unauthorized",
-                    juniper::Value::scalar("You do not have permission to access this resource."),
-                ));
-            }
-        } else {
-            error!("Unauthorized access attempt to 'categories' query with no user.");
-            return Err(juniper::FieldError::new(
-                "Unauthorized",
-                juniper::Value::scalar("You must be logged in to access this resource."),
-            ));
-        }
-
         let start_time = Instant::now();
         info!("Executing 'categories' query");
         let result = CategoriesQueries::get_all_categories(context);
@@ -240,26 +140,6 @@ impl RootQuery {
         context: &Context,
         category_id: i32,
     ) -> juniper::FieldResult<Option<CategoryGraphQL>> {
-        // Authorization Check
-        if let Some(user) = &context.user {
-            if user.role != "admin" && user.role != "user" {
-                error!(
-                    "Unauthorized access attempt to 'category' query by user: {}",
-                    user.username
-                );
-                return Err(juniper::FieldError::new(
-                    "Unauthorized",
-                    juniper::Value::scalar("You do not have permission to access this resource."),
-                ));
-            }
-        } else {
-            error!("Unauthorized access attempt to 'category' query with no user.");
-            return Err(juniper::FieldError::new(
-                "Unauthorized",
-                juniper::Value::scalar("You must be logged in to access this resource."),
-            ));
-        }
-
         let start_time = Instant::now();
         info!(
             "Executing 'category' query with category_id: {}",
