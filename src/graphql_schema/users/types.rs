@@ -21,4 +21,4 @@ impl From<crate::models::auth::User> for UserType {
             image: user.image,
         }
     }
-} 
+}

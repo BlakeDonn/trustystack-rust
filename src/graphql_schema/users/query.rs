@@ -30,4 +30,3 @@ impl UserQuery {
         Ok(user_list.into_iter().map(UserType::from).collect())
     }
 }
-

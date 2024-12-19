@@ -7,10 +7,10 @@ use crate::graphql_schema::parts::part_graphql::PartGraphQL;
 use crate::graphql_schema::queries::categories_queries::CategoriesQueries;
 use crate::graphql_schema::queries::manufacturers_queries::ManufacturersQueries;
 use crate::graphql_schema::queries::parts_queries::{get_all_parts, get_part_by_id};
+use crate::graphql_schema::users::query::UserQuery;
 use juniper::{EmptyMutation, EmptySubscription, RootNode};
 use log::{error, info};
 use std::time::Instant;
-use crate::graphql_schema::users::query::UserQuery;
 
 /// RootQuery struct that defines the available GraphQL queries in the API.
 pub struct RootQuery;
