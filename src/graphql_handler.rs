@@ -6,20 +6,6 @@ use juniper::http::GraphQLRequest;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct LoginRequest {
-    username: String,
-    password: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct Claims {
-    sub: i32, // Subject (user ID)
-    username: String,
-    role: String, // User role
-    exp: usize,   // Expiration time as UNIX timestamp
-}
-
 /// Handles GraphQL requests by executing the query and returning the response as JSON.
 pub async fn graphql_handler(
     schema: web::Data<Arc<Schema>>,

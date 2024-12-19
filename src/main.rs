@@ -60,7 +60,7 @@ async fn main() -> std::io::Result<()> {
     info!("GraphQL schema created.");
 
     // Initialize GraphQL context with the database pool
-    let context = web::Data::new(Context::new(pool)); // User will be set by middleware
+    let context = web::Data::new(Context::new(pool));
 
     // Clone schema for use in server closure
     let schema_clone = schema.clone();

@@ -102,6 +102,7 @@ docker build -t trustystack-rust-backend .
 ```
 
 #### Run the Docker Container
+:wa
 
 ```plaintext
 docker run -p 8080:8080 --env-file .env trustystack-rust-backend
@@ -112,7 +113,128 @@ docker run -p 8080:8080 --env-file .env trustystack-rust-backend
 ```plaintext
 cargo test
 ```
+## Layout
+```plaintext
+.
+├── .env
+├── .github
+│   └── workflows
+│       ├── doc-gen.yml
+│       ├── rust-tests.yml
+│       └── trigger-infra.yml
+├── .gitignore
+├── Cargo.toml
+├── Dockerfile
+├── README.md
+├── data
+│   └── csv
+│       ├── categories.csv
+│       ├── cpu_specs.csv
+│       ├── gpu_specs.csv
+│       ├── manufacturers.csv
+│       ├── memory_specs.csv
+│       ├── parts.csv
+│       └── storage_specs.csv
+├── diesel.toml
+├── entrypoint.sh
+├── example.env
+├── migrations
+│   ├── .keep
+│   ├── 00000000000000_diesel_initial_setup
+│   │   ├── down.sql
+│   │   └── up.sql
+│   ├── 001_2024-10-01-003932_enable_uuid_extension
+│   │   ├── down.sql
+│   │   └── up.sql
+│   ├── 2024-10-02-182125_create_manufacturers_and_categories
+│   │   ├── down.sql
+│   │   └── up.sql
+│   ├── 2024-10-02-182135_create_parts
+│   │   ├── down.sql
+│   │   └── up.sql
+│   ├── 2024-10-02-182142_create_part_specifications
+│   │   ├── down.sql
+│   │   └── up.sql
+│   └── 2024-10-02-182155_create_configurations
+│       ├── down.sql
+│       └── up.sql
+├── src
+│   ├── bin
+│   │   └── migrate.rs
+│   ├── data_import.rs
+│   ├── diesel_schema
+│   │   ├── configurations.rs
+│   │   ├── mod.rs
+│   │   ├── parts.rs
+│   ├── graphql_handler.rs
+│   ├── graphql_schema
+│   │   ├── context.rs
+│   │   ├── custom_scalars
+│   │   │   └── big_decimal_scalar.rs
+│   │   ├── mod.rs
+│   │   ├── parts
+│   │   │   ├── category_graphql.rs
+│   │   │   ├── cpu_spec_graphql.rs
+│   │   │   ├── gpu_spec_graphql.rs
+│   │   │   ├── manufacturer_graphql.rs
+│   │   │   ├── memory_spec_graphql.rs
+│   │   │   ├── mod.rs
+│   │   │   ├── part_graphql.rs
+│   │   │   └── storage_spec_graphql.rs
+│   │   ├── prebuilt
+│   │   │   ├── mod.rs
+│   │   │   └── query.rs
+│   │   ├── queries
+│   │   │   ├── categories_queries.rs
+│   │   │   ├── manufacturers_queries.rs
+│   │   │   ├── mod.rs
+│   │   │   └── parts_queries.rs
+│   │   ├── root_query.rs
+│   │   ├── schema.rs
+│   │   ├── service
+│   │   │   ├── mod.rs
+│   │   │   └── query.rs
+│   │   ├── software
+│   │   │   ├── mod.rs
+│   │   │   └── query.rs
+│   │   └── users
+│   ├── lib.rs
+│   ├── main.rs
+│   ├── middleware
+│   │   ├── auth.rs
+│   │   ├── logging.rs
+│   │   ├── mod.rs
+│   │   └── timing.rs
+│   ├── migration.rs
+│   ├── models
+│   │   ├── auth
+│   │   │   ├── mod.rs
+│   │   ├── mod.rs
+│   │   └── parts
+│   │       ├── category.rs
+│   │       ├── cpu_spec.rs
+│   │       ├── gpu_spec.rs
+│   │       ├── manufacturer.rs
+│   │       ├── memory_spec.rs
+│   │       ├── mod.rs
+│   │       ├── part.rs
+│   │       └── storage_spec.rs
+│   └── types
+│       ├── errors.rs
+│       ├── mod.rs
+│       └── wrappers.rs
+└── tests
+    ├── data_import_tests.rs
+    ├── integration_test.rs
+    ├── migration_tests.rs
+    └── utils.rs
 
+30 directories, 88 files
+.github/workflows
+├── doc-gen.yml
+├── rust-tests.yml
+└── trigger-infra.yml
+```
 ## Workflow Instructions
 
 ### Building the Application
