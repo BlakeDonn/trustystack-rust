@@ -10,6 +10,7 @@ use crate::graphql_schema::queries::parts_queries::{get_all_parts, get_part_by_i
 use juniper::{EmptyMutation, EmptySubscription, RootNode};
 use log::{error, info};
 use std::time::Instant;
+use crate::graphql_schema::users::query::UserQuery;
 
 /// RootQuery struct that defines the available GraphQL queries in the API.
 pub struct RootQuery;
@@ -163,6 +164,10 @@ impl RootQuery {
             ),
         }
         result
+    }
+
+    fn user_query() -> UserQuery {
+        UserQuery
     }
 }
 

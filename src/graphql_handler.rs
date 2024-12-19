@@ -3,7 +3,6 @@
 use crate::graphql_schema::{context::Context, schema::Schema};
 use actix_web::{web, HttpResponse};
 use juniper::http::GraphQLRequest;
-use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
 /// Handles GraphQL requests by executing the query and returning the response as JSON.

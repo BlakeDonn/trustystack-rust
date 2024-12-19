@@ -10,7 +10,7 @@ filter = { only_tables = ["configurations", "configuration_parts"] }
 
 [print_schema.users]
 file = "src/diesel_schema/users.rs"
-filter = { only_tables = ["users"] }
+filter = { only_tables = ["users", "sessions", "accounts", "verification_tokens"] }
 
 [migrations_directory]
 dir = "migrations"

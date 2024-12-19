@@ -6,3 +6,4 @@ pub mod root_query;
 pub mod schema;
 pub mod service;
 pub mod software;
+pub mod users;
