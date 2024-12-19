@@ -7,10 +7,9 @@ use diesel::PgConnection;
 use dotenv::dotenv;
 use env_logger::Env;
 use log::{error, info};
-use rust_backend::graphql_handler::{graphql_handler, login_handler}; // Import login_handler
+use rust_backend::graphql_handler::graphql_handler;
 use rust_backend::graphql_schema::context::Context;
 use rust_backend::graphql_schema::schema::create_schema;
-use rust_backend::middleware::auth::AuthMiddleware;
 use rust_backend::middleware::logging::GraphQLLogging;
 use rust_backend::middleware::timing::Timing;
 use std::env;
@@ -61,7 +60,7 @@ async fn main() -> std::io::Result<()> {
     info!("GraphQL schema created.");
 
     // Initialize GraphQL context with the database pool
-    let context = web::Data::new(Context::new(pool, None)); // User will be set by middleware
+    let context = web::Data::new(Context::new(pool));
 
     // Clone schema for use in server closure
     let schema_clone = schema.clone();
@@ -76,7 +75,6 @@ async fn main() -> std::io::Result<()> {
             .supports_credentials();
 
         App::new()
-            .wrap(AuthMiddleware) // Add Auth middleware first
             .wrap(Timing)
             .wrap(GraphQLLogging) // Logs GraphQL query and variables
             .wrap(cors)
@@ -95,12 +93,6 @@ async fn main() -> std::io::Result<()> {
                 web::resource("/")
                     .guard(guard::Get())
                     .to(playground_handler),
-            )
-            // Login endpoint
-            .service(
-                web::resource("/login")
-                    .guard(guard::Post())
-                    .to(login_handler),
             )
     })
     .bind("0.0.0.0:8080");
