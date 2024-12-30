@@ -9,7 +9,8 @@ pub struct User {
     pub id: i32,
     pub name: Option<String>,
     pub email: Option<String>,
-    pub emailVerified: Option<DateTime<Utc>>,
+    #[diesel(column_name = emailVerified)]
+    pub email_verified: Option<DateTime<Utc>>,
     pub image: Option<String>,
     pub bio: Option<String>,
 }

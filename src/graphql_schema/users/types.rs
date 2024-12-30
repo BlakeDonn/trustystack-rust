@@ -19,7 +19,7 @@ impl From<crate::models::auth::User> for UserType {
             id: user.id,
             name: user.name,
             email: user.email,
-            email_verified: user.emailVerified,
+            email_verified: user.email_verified,
             image: user.image,
             bio: user.bio,
         }
