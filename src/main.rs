@@ -7,11 +7,13 @@ use diesel::PgConnection;
 use dotenv::dotenv;
 use env_logger::Env;
 use log::{error, info};
+use rust_backend::diesel_schema::users;
 use rust_backend::graphql_handler::graphql_handler;
 use rust_backend::graphql_schema::context::Context;
 use rust_backend::graphql_schema::schema::create_schema;
 use rust_backend::middleware::logging::GraphQLLogging;
 use rust_backend::middleware::timing::Timing;
+use rust_backend::models::auth::User;
 use std::env;
 use std::sync::Arc;
 
@@ -60,7 +62,7 @@ async fn main() -> std::io::Result<()> {
     info!("GraphQL schema created.");
 
     // Initialize GraphQL context with the database pool
-    let context = web::Data::new(Context::new(pool));
+    let context = web::Data::new(Context::new(pool, None));
 
     // Clone schema for use in server closure
     let schema_clone = schema.clone();

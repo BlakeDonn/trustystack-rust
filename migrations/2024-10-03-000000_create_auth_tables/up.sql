@@ -3,7 +3,8 @@ CREATE TABLE users (
     name VARCHAR(255),
     email VARCHAR(255) UNIQUE,
     "emailVerified" TIMESTAMPTZ,
-    image TEXT
+    image TEXT,
+    bio TEXT
 );
 
 CREATE TABLE sessions (
@@ -34,4 +35,4 @@ CREATE TABLE verification_tokens (
     token TEXT NOT NULL,
     expires TIMESTAMPTZ NOT NULL,
     PRIMARY KEY (identifier, token)
-); 
+);
