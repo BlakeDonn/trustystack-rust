@@ -21,7 +21,4 @@ diesel::table! {
 
 diesel::joinable!(configuration_parts -> configurations (configuration_id));
 
-diesel::allow_tables_to_appear_in_same_query!(
-    configuration_parts,
-    configurations,
-);
+diesel::allow_tables_to_appear_in_same_query!(configuration_parts, configurations,);
