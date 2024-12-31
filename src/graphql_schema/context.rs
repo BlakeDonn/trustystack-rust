@@ -6,6 +6,7 @@ use diesel::PgConnection;
 use juniper::{FieldError, FieldResult};
 use log::{debug, error, info};
 
+use crate::models::auth::User;
 use crate::models::parts::category::Category;
 use crate::models::parts::cpu_spec::CpuSpec;
 use crate::models::parts::gpu_spec::GpuSpec;
@@ -16,12 +17,21 @@ use crate::models::parts::storage_spec::StorageSpec;
 /// Represents the context that holds the database connection pool.
 pub struct Context {
     pub db: Pool<ConnectionManager<PgConnection>>,
+    pub user: Option<User>,
 }
 
 impl Context {
     /// Creates a new context with the provided database connection pool.
-    pub fn new(db: Pool<ConnectionManager<PgConnection>>) -> Self {
-        Context { db }
+    pub fn new(db: Pool<ConnectionManager<PgConnection>>, user: Option<User>) -> Self {
+        if let Some(ref user) = user {
+            info!(
+                "Creating new Context with user: {}",
+                user.email.as_deref().unwrap_or("no email")
+            );
+        } else {
+            info!("Creating new Context without a user.");
+        }
+        Context { db, user }
     }
 
     /// Retrieves a connection from the pool.

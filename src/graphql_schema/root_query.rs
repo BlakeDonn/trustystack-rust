@@ -29,6 +29,23 @@ impl RootQuery {
         limit: Option<i32>,
         offset: Option<i32>,
     ) -> juniper::FieldResult<Vec<PartGraphQL>> {
+        // Authorization Check
+        if let Some(user) = &context.user {
+            if user.email.is_none() {
+                error!("Unauthorized access attempt to 'parts' query by user without email");
+                return Err(juniper::FieldError::new(
+                    "Unauthorized",
+                    juniper::Value::scalar("You do not have permission to access this resource."),
+                ));
+            }
+        } else {
+            error!("Unauthorized access attempt to 'parts' query with no user.");
+            return Err(juniper::FieldError::new(
+                "Unauthorized",
+                juniper::Value::scalar("You must be logged in to access this resource."),
+            ));
+        }
+
         let start_time = Instant::now();
         info!(
             "Executing 'parts' query with limit: {:?}, offset: {:?}",
@@ -172,7 +189,8 @@ impl RootQuery {
 }
 
 // Define the Schema
-pub type SchemaType = RootNode<'static, RootQuery, EmptyMutation, EmptySubscription>;
+pub type SchemaType =
+    RootNode<'static, RootQuery, EmptyMutation<Context>, EmptySubscription<Context>>;
 
 /// Creates the GraphQL schema.
 pub fn create_schema() -> SchemaType {

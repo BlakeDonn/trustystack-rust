@@ -7,8 +7,10 @@ pub struct UserType {
     pub id: i32,
     pub name: Option<String>,
     pub email: Option<String>,
+    #[graphql(name = "emailVerified")]
     pub email_verified: Option<DateTime<Utc>>,
     pub image: Option<String>,
+    pub bio: Option<String>,
 }
 
 impl From<crate::models::auth::User> for UserType {
@@ -19,6 +21,7 @@ impl From<crate::models::auth::User> for UserType {
             email: user.email,
             email_verified: user.email_verified,
             image: user.image,
+            bio: user.bio,
         }
     }
 }
